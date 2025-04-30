@@ -9,6 +9,10 @@ class Location(models.Model):
     lng = models.FloatField(verbose_name=_("Long"))
     alt = models.FloatField(blank=True, null=True, verbose_name=_("alt"))
 
+    class Meta:
+        verbose_name = _('Location')
+        verbose_name_plural = _('1. Locations')
+
     def __str__(self):
         return self.name
 
@@ -20,6 +24,10 @@ class AssetBundle(models.Model):
     start_time = models.DateTimeField(null=True, blank=True, verbose_name=_("Start"))
     end_time = models.DateTimeField(null=True, blank=True, verbose_name=_("End"))
     locations = models.ManyToManyField(Location, related_name='bundles', verbose_name=_("Locations"))
+
+    class Meta:
+        verbose_name = _('Asset Bundle')
+        verbose_name_plural = _('2. Asset Bundles')
 
     def __str__(self):
         return self.name
