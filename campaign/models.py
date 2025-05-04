@@ -51,4 +51,4 @@ class UserProgress(models.Model):
     # TODO: rewards model
 
     def __str__(self):
-        return f"{self.user.nickname} - {self.campaign.name}"
+        return f"{self.user} - {self.campaign.name}"

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from account.models import User
+from account.models import User, OTP
 
 
 # Register your models here.
@@ -25,3 +25,8 @@ class UserModelAdmin(UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
+
+
+@admin.register(OTP)
+class OtpAdmin(admin.ModelAdmin):
+    pass
