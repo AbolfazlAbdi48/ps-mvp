@@ -142,12 +142,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'account.User'
 
+# DRF
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
+# CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
@@ -177,3 +179,8 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# SMS
+SMS_PANEL_BASE_API = config('SMS_PANEL_BASE_API')
+SMS_ORIGINATOR = config('SMS_ORIGINATOR')
+SMS_PANEL_ACCESS_KEY = config('SMS_PANEL_ACCESS_KEY')

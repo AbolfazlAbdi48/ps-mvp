@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from extensions.sms import send_verification_code
 from .models import OTP
 from django.contrib.auth import get_user_model
 
@@ -10,7 +12,9 @@ class PhoneSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         code = OTP.generate_code()
-        otp = OTP.objects.create(phone_number=validated_data['phone_number'], code=code)
+        phone_number = validated_data['phone_number']
+        otp = OTP.objects.create(phone_number=phone_number, code=code)
+        send_verification_code(otp.code, phone_number)
         return otp
 
 
