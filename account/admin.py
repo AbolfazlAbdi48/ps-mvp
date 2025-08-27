@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from account.models import User, OTP
+from account.models import User, OTP, Profile
 
 
 # Register your models here.
@@ -30,3 +30,9 @@ class UserModelAdmin(UserAdmin):
 @admin.register(OTP)
 class OtpAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ("user__nickname", "total_score", "cashable_score")
+    search_fields = ("user__nickname",)

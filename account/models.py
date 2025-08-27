@@ -32,3 +32,12 @@ class OTP(models.Model):
     @staticmethod
     def generate_code():
         return str(random.randint(1000, 9999))
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    total_score = models.IntegerField(default=0)
+    cashable_score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'Profile of {self.user.username} - {self.user.nickname}'

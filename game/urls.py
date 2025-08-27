@@ -3,5 +3,8 @@ from .views import NearbyBundlesAPIView
 
 app_name = "game"
 urlpatterns = [
-    path("bundles/nearby/", NearbyBundlesAPIView.as_view(), name="bundles-nearby")
+    # version 1
+    path("v1/bundles/nearby/", NearbyBundlesAPIView.as_view(), name="bundles-nearby")
+
+    # version 2
 ]

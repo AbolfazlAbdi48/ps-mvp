@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from game.models import Location, AssetBundle
+from game.models import Location, AssetBundle, GameHistory
 
 
 # Register your models here.
@@ -11,4 +11,9 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(AssetBundle)
 class AssetBundleAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(GameHistory)
+class GameHistoryAdmin(admin.ModelAdmin):
     pass
