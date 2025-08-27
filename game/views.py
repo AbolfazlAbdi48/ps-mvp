@@ -5,6 +5,83 @@ from .models import Location
 from .serializers import LocationWithBundlesSerializer
 import geopy.distance
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views import View
+
+from account.models import Profile
+from .models import AssetBundle
+
+
+@method_decorator(login_required, name='dispatch')
+class GameplayView(View):
+    def get(self, request, *args, **kwargs):
+        """
+        Load AssetBundles and Run GamePlay.
+        """
+        # Check User Score
+        user_profile = request.user.profile
+        total_score = user_profile.total_score
+
+        asset_bundles = AssetBundle.objects.filter(
+            required_score_to_show__lte=total_score
+        ).order_by(
+            'required_score_to_show'
+        )
+
+        bundle_urls = [bundle.file_url for bundle in asset_bundles]
+
+        context = {
+            'asset_bundles': bundle_urls,
+            'user_score': total_score,
+        }
+
+        return render(request, 'game/play.html', context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        JS API
+        """
+        # POST data from JS
+        # tapped bundles ID
+        # request_data = request.POST.get('tapped_asset')
+        tapped_asset_name = request.POST.get('tapped_asset_id')
+
+        try:
+            asset_bundle = AssetBundle.objects.get(id=tapped_asset_name)
+        except AssetBundle.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Asset not found'}, status=404)
+
+        # Profile Update
+        user_profile = request.user.profile
+        user_profile.total_score += asset_bundle.points_per_tap
+        user_profile.cashable_score += asset_bundle.points_per_tap
+        user_profile.save()
+
+        # check cashable score
+        cashout_threshold = 10000
+        show_cashout_popup = False
+
+        if user_profile.cashable_score >= cashout_threshold:
+            show_cashout_popup = True
+
+        # load asset bundles
+        updated_asset_bundles = AssetBundle.objects.filter(
+            required_score_to_show__lte=user_profile.total_score).order_by('required_score_to_show')
+        updated_bundle_urls = [bundle.file_url for bundle in updated_asset_bundles]
+
+        response_data = {
+            'status': 'success',
+            'user_score': user_profile.total_score,
+            'cashable_score': user_profile.cashable_score,
+            'show_cashout_popup': show_cashout_popup,
+            'asset_bundles': updated_bundle_urls,
+        }
+
+        return JsonResponse(response_data)
+
 
 class NearbyBundlesAPIView(APIView):
     def get(self, request):

@@ -25,7 +25,9 @@ class AssetBundle(models.Model):
     file_url = models.URLField(verbose_name=_("File"))
     start_time = models.DateTimeField(null=True, blank=True, verbose_name=_("Start"))
     end_time = models.DateTimeField(null=True, blank=True, verbose_name=_("End"))
-    locations = models.ManyToManyField(Location, related_name='bundles', verbose_name=_("Locations"))
+    locations = models.ManyToManyField(
+        Location, related_name='bundles', null=True, blank=True, verbose_name=_("Locations")
+    )
     points_per_tap = models.IntegerField(default=10, verbose_name=_("Points per Tap"))
     required_score_to_show = models.IntegerField(default=0, verbose_name=_("Required Score to show"))
 
