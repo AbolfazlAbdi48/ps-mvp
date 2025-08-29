@@ -17,7 +17,7 @@ from account.models import Profile
 from .models import AssetBundle
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class GameplayView(View):
     def get(self, request, *args, **kwargs):
         """
@@ -28,7 +28,8 @@ class GameplayView(View):
         total_score = user_profile.total_score
 
         asset_bundles = AssetBundle.objects.filter(
-            required_score_to_show__lte=total_score
+            # required_score_to_show__lte=total_score
+            id=1
         ).order_by(
             'required_score_to_show'
         )
