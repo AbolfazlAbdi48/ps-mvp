@@ -23,9 +23,11 @@ class GameplayView(View):
         """
         Load AssetBundles and Run GamePlay.
         """
+        total_score = 0
         # Check User Score
-        user_profile = request.user.profile
-        total_score = user_profile.total_score
+        if request.user.is_authenticated:
+            user_profile = request.user.profile
+            total_score = user_profile.total_score
 
         asset_bundles = AssetBundle.objects.filter(
             # required_score_to_show__lte=total_score
