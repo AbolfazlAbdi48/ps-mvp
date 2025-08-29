@@ -1,4 +1,6 @@
 from rest_framework.views import APIView
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Location
@@ -31,10 +33,24 @@ class GameplayView(View):
             'required_score_to_show'
         )
 
-        bundle_urls = [bundle.file_url for bundle in asset_bundles]
+        bundles_data = [
+            {
+                "id": str(bundle.id),  # استفاده از id برای شناسه
+                "name": bundle.name,
+                "url": request.build_absolute_uri(bundle.file_url)
+            }
+            for bundle in asset_bundles
+        ]
+
+        unity_data = {
+            "type": "sendUnitsData",
+            "data": bundles_data
+        }
+
+        unity_data_json = json.dumps(unity_data, cls=DjangoJSONEncoder)
 
         context = {
-            'asset_bundles': bundle_urls,
+            'unity_data': unity_data_json,
             'user_score': total_score,
         }
 
