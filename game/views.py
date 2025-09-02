@@ -17,7 +17,7 @@ from account.models import Profile
 from .models import AssetBundle
 
 
-# @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class GameplayView(View):
     def get(self, request, *args, **kwargs):
         """
@@ -30,15 +30,14 @@ class GameplayView(View):
             total_score = user_profile.total_score
 
         asset_bundles = AssetBundle.objects.filter(
-            # required_score_to_show__lte=total_score
-            id=1
+            required_score_to_show__lte=total_score
         ).order_by(
             'required_score_to_show'
         )
 
         bundles_data = [
             {
-                "id": str(bundle.id),  # استفاده از id برای شناسه
+                "id": str(bundle.id),
                 "name": bundle.name,
                 "url": request.build_absolute_uri(bundle.file_url)
             }
@@ -76,7 +75,6 @@ class GameplayView(View):
         # Profile Update
         user_profile = request.user.profile
         user_profile.total_score += asset_bundle.points_per_tap
-        user_profile.cashable_score += asset_bundle.points_per_tap
         user_profile.save()
 
         # check cashable score

@@ -41,7 +41,6 @@
 <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
 
 
-
 <div style="border:solid 1px black; width:200px; height:30px; margin:auto; text-align:center; cursor:pointer;"
      onclick="callUnityFunc()">
     call unity func
@@ -311,33 +310,69 @@
         console.log("--------------------------")
         console.log(i_msg)
         console.log("--------------------------")
+
+        try {
+            const messageData = JSON.parse(i_msg);
+
+            if (messageData.type === 'clickedUnit') {
+                const clickedUnitId = messageData.data.id;
+                fetch('/api/game/v2/play/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `tapped_asset_id=${clickedUnitId}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            callUnityFunc();
+                        } else {
+                            console.error("خطا در آپدیت پروفایل:", data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('خطا در ارتباط با بک‌اند:', error);
+                    });
+            }
+        } catch (e) {
+            console.error("خطا در تجزیه پیام JSON از یونیتی:", e);
+        }
     }
 
 </script>
 
 
 <script>
-    // ... (سایر کدهای شما) ...
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
     function callUnityFunc() {
-        // ابتدا مطمئن شوید که unityInstance تعریف شده است
         if (window.unityInstance && window.unityInstance.SendMessage) {
-
-
             const djangoData = JSON.parse('{{ unity_data|safe|escapejs }}');
-            console.log(djangoData.data)
             const data = {
                 "type": "sendUnitsData",
-                "data":[...djangoData.data]
+                "data": [...djangoData.data]
             };
 
-            // شیء جاوااسکریپت را به رشته JSON تبدیل می‌کنیم
             const jsonString = JSON.stringify(data);
 
-            // داده‌های آماده شده را به یونیتی می‌فرستیم
             window.unityInstance.SendMessage('CommunicationWithJS', 'ReceiveMessageFromJS', jsonString);
 
             console.log("پیام به یونیتی ارسال شد.");
-
         } else {
             console.error("خطا: unityInstance هنوز تعریف نشده است.");
         }
