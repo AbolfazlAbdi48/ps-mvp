@@ -7,5 +7,5 @@ urlpatterns = [
     path("v1/bundles/nearby/", NearbyBundlesAPIView.as_view(), name="bundles-nearby"),
 
     # version 2
-    path("v2/play/", GameplayView.as_view(), name="bundles-nearby")
+    path("v2/play/", GameplayView.as_view(), name="game-play")
 ]

@@ -18,9 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from game.views import main
+
 urlpatterns = [
+    path("", main, name="main"),
+
     path("api/game/", include("game.urls")),
-    path("api/auth/", include("account.urls")),
+    path("auth/", include("account.urls")),
     path("api/campaign/", include("campaign.urls")),
     path("admin/", admin.site.urls),
 ]

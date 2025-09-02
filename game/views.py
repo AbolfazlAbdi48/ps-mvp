@@ -7,7 +7,7 @@ from .models import Location
 from .serializers import LocationWithBundlesSerializer
 import geopy.distance
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -15,6 +15,12 @@ from django.views import View
 
 from account.models import Profile
 from .models import AssetBundle
+
+
+def main(request):
+    if request.user.is_authenticated:
+        return redirect("game:game-play")
+    return redirect("account:otp-login")
 
 
 @method_decorator(login_required, name='dispatch')

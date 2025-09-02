@@ -1,6 +1,13 @@
+from django.contrib import messages
+from django.contrib.auth import login
+from django.shortcuts import redirect, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from extensions.sms import send_verification_code
+from .forms import OTPVerifyForm, PhoneForm
+from .models import OTP, User
 from .serializers import PhoneSerializer, OTPVerifySerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -29,3 +36,55 @@ class VerifyOTPView(APIView):
                 "message": "ورود با موفقیت انجام شد"
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def send_otp_view(request):
+    if request.method == 'POST':
+        form = PhoneForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+
+            code = OTP.generate_code()
+            OTP.objects.create(phone_number=phone_number, code=code)
+
+            send_verification_code(code, phone_number)
+
+            return redirect('account:otp-login-verify', phone=phone_number)
+    else:
+        form = PhoneForm()
+
+    return render(request, 'account/send_otp.html', {'form': form})
+
+
+def verify_otp_view(request, phone):
+    if request.method == 'POST':
+        form = OTPVerifyForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+
+            try:
+                otp = OTP.objects.filter(
+                    phone_number=phone,
+                    code=code,
+                    is_verified=False
+                ).latest('created_at')
+
+                if otp.is_expired():
+                    messages.error(request, 'کد منقضی شده است.')
+                else:
+                    otp.is_verified = True
+                    otp.save()
+
+                    user, created = User.objects.get_or_create(username=phone)
+
+                    login(request, user)
+
+                    messages.success(request, 'ورود با موفقیت انجام شد.')
+                    return redirect('game:game-play')  # ریدایرکت به داشبورد
+            except OTP.DoesNotExist:
+                messages.error(request, 'کد اشتباه است یا قبلاً استفاده شده است.')
+
+    else:
+        form = OTPVerifyForm()
+
+    return render(request, 'account/verify_otp.html', {'form': form, 'phone': phone})
