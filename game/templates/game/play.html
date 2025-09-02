@@ -41,10 +41,10 @@
 <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
 
 
-<div style="border:solid 1px black; width:200px; height:30px; margin:auto; text-align:center; cursor:pointer;"
-     onclick="callUnityFunc()">
-    call unity func
-</div>
+{#<div style="border:solid 1px black; width:200px; height:30px; margin:auto; text-align:center; cursor:pointer;"#}
+{#     onclick="callUnityFunc()">#}
+{#    call unity func#}
+{#</div>#}
 
 
 <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
@@ -313,6 +313,11 @@
 
         try {
             const messageData = JSON.parse(i_msg);
+
+            if (messageData.type === 'startGame') {
+                console.log('startGame')
+                callUnityFunc();
+            }
 
             if (messageData.type === 'clickedUnit') {
                 const clickedUnitId = messageData.data.id;
