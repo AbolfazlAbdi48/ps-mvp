@@ -424,6 +424,12 @@
     <canvas id="video-canvas"></canvas>
 </div>
 
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+
+<dotlottie-wc src="{% static 'ui/js/YFcPSZlUns.lottie' %}"
+              style="display: none;width: 200px;height: 100px;position: fixed; transform: translate(-50%, -50%);top: 50%; left: 50%;z-index:2;"
+              speed="1" autoplay loop id="success-animation"></dotlottie-wc>
+
 {#<!-- burger -->#}
 {#<div class="burger" id="burger">#}
 {#    <input id="checkbox" type="checkbox">#}
@@ -763,6 +769,15 @@
         document.getElementById("screenshotImg").style.height = 80 / window.innerWidth * window.innerHeight + "vw";
     }
 
+    function showAnimation() {
+        const anim = document.getElementById("success-animation");
+        anim.style.display = "block"; // نمایش
+
+        setTimeout(() => {
+            anim.style.display = "none"; // بعد از 3 ثانیه مخفی
+        }, 2500);
+    }
+
     function FromUnityToJS(i_msg) {
         console.log("--------------------------")
         console.log(i_msg)
@@ -777,6 +792,7 @@
             }
 
             if (messageData.type === 'clickedUnit') {
+                showAnimation();
                 const clickedUnitId = messageData.data.id;
                 fetch('/api/game/v2/play/', {
                     method: 'POST',
