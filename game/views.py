@@ -106,6 +106,16 @@ class GameplayView(View):
         return JsonResponse(response_data)
 
 
+@method_decorator(login_required, name='dispatch')
+class LeaderBoardView(View):
+    def get(self, request, *args, **kwargs):
+        profiles = Profile.objects.all().order_by("-total_score")[:10]
+        context = {
+            "profiles": profiles
+        }
+        return render(request, 'game/leaderboard.html', context)
+
+
 class NearbyBundlesAPIView(APIView):
     def get(self, request):
         try:

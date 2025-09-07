@@ -39,5 +39,8 @@ class Profile(models.Model):
     total_score = models.IntegerField(default=0)
     cashable_score = models.IntegerField(default=0)
 
+    def show_phone_number(self):
+        return f"{self.user.username[:4]}xxx{self.user.username[7:11]}"
+
     def __str__(self):
         return f'Profile of {self.user.username} - {self.user.nickname}'
