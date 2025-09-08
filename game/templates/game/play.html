@@ -462,7 +462,7 @@
         }
 
         .visible {
-            opacity: 1 !important;
+           left: 50% !important;
         }
 
         /* card */
@@ -893,6 +893,63 @@
 
         /* end heart */
 
+        /* start table */
+        .table-card {
+            width: 250px;
+            background: rgb(44, 44, 44);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            overflow: hidden;
+        }
+
+        .table-card .card__title {
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-bottom: 1px solid rgb(167, 159, 159);
+            font-size: 0.95rem;
+        }
+
+        .table-card .card__data {
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            border-right: 1px solid rgb(203, 203, 203);
+            border-left: 1px solid rgb(203, 203, 203);
+            border-bottom: 1px solid rgb(203, 203, 203);
+        }
+
+        .table-card .card__right {
+            width: 60%;
+            border-right: 1px solid rgb(203, 203, 203);
+        }
+
+        .table-card .card__left {
+            width: 40%;
+            text-align: start;
+        }
+
+        .item {
+            padding: 3px 0;
+            background-color: white;
+        }
+
+        .card__right .item {
+            padding-left: 0.8em;
+        }
+
+        .card__left .item {
+            padding-right: 0.8em;
+        }
+
+        .item:nth-child(even) {
+            background: rgb(234, 235, 234);
+        }
+
+        /* end table */
+
     </style>
 </head>
 <body>
@@ -950,14 +1007,13 @@
 </div>
 
 
-<div style="display: none;margin: 0; padding: 0; min-height: 100vh; position: relative;" id="ui-section">
+<div style="display: none;" id="ui-section">
     <div class="info-button" onclick="toggleInfoPanel()">i</div>
 
     <div class="progress-app" id="progress-app" style="
         position: fixed;
-        opacity: 0;
         top: -60px;
-        left: 50%;
+        left: -100%;
         transform: translateX(-50%);
         width: 90%;
         max-width: 600px;
@@ -1014,8 +1070,29 @@
         </main>
     </div>
 
+    <div class="table-card" dir="rtl" id="table-card"
+         style="width:96%;position:absolute;top: 20%;left: -100%;transform: translateX(-50%)" onclick="toggleTable()">
+        <div class="card__title">نفرات برتر</div>
+        <div class="card__data">
+            <div class="card__right">
+                {% for profile in profiles %}
+                    <div class="item" style="padding:1rem">{{ profile.show_phone_number }}</div>
+                {% endfor %}
+
+            </div>
+            <div class="card__left">
+                {% for profile in profiles %}
+                    <div class="item" style="padding:1rem">{{ profile.total_score }}
+                        امتیاز دریافت شده
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
     <div class="button-container" style="position:fixed; bottom: 50px;left: 50%;transform: translateX(-50%);">
-        <a href="{% url 'game:game-leaderboard' %}" class="button">
+        <button onclick="toggleInfoPanel()" class="button">
             <svg
                     class="icon"
                     stroke="currentColor"
@@ -1030,9 +1107,9 @@
                         d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"
                 ></path>
             </svg>
-        </a>
+        </button>
 
-        <a href="{% url 'game:game-play' %}"  class="button">
+        <a href="{% url 'game:game-play' %}" class="button">
             <svg
                     class="icon"
                     stroke="currentColor"
@@ -1049,7 +1126,7 @@
             </svg>
         </a>
 
-        <a href="{% url 'game:game-leaderboard' %}"  class="button">
+        <button onclick="toggleTable()" class="button">
             <svg
                     class="icon"
                     stroke="currentColor"
@@ -1062,7 +1139,7 @@
             >
                 <path d="M16 11V3H8v6H2v12h20V11h-6zm-6-6h4v14h-4V5zm-6 6h4v8H4v-8zm16 8h-4v-6h4v6z"></path>
             </svg>
-        </a>
+        </button>
     </div>
 
     <div class="container" id="container" style="position:absolute;left: 50%;transform: translateX(-50%);top:100px">
@@ -1075,8 +1152,6 @@
             <button class="play-button" onclick="closePopUp()">بریم بازی کنیم</button>
         </div>
     </div>
-
-
 </div>
 
 
@@ -1119,6 +1194,9 @@
                 dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
                 frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
                 codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
+                // dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
+                // frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
+                // codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "DefaultCompany",
                 productName: "TehranAR",
@@ -1434,6 +1512,12 @@
 <script>
     function closePopUp() {
         document.getElementById('container').style.display = 'none';
+    }
+
+    function toggleTable() {
+        const panel = document.getElementById('table-card');
+
+        panel.classList.toggle('visible');
     }
 
     function toggleInfoPanel() {

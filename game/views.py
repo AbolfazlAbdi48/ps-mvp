@@ -50,6 +50,8 @@ class GameplayView(View):
             for bundle in asset_bundles
         ]
 
+        profiles = Profile.objects.all().order_by("-total_score")[:5]
+
         unity_data = {
             "type": "sendUnitsData",
             "data": bundles_data
@@ -60,6 +62,7 @@ class GameplayView(View):
         context = {
             'unity_data': unity_data_json,
             'user_score': total_score,
+            'profiles': profiles
         }
 
         return render(request, 'game/play.html', context)
