@@ -1086,7 +1086,6 @@
                         امتیاز
                     </div>
                 {% endfor %}
-
             </div>
         </div>
     </div>
@@ -1414,6 +1413,7 @@
             }
 
             if (messageData.type === 'qrFound') {
+                console.log(messageData)
                 alert("QRCode Founded")
             }
 
@@ -1433,9 +1433,6 @@
                             callUnityFunc();
                             showAnimation();
                             document.getElementById("info-value").innerHTML = data.user_score
-                            if (data.user_score === 5) {
-                                qrUnityFunc();
-                            }
                         } else {
                             console.error("خطا در آپدیت پروفایل:", data.message);
                         }
@@ -1492,7 +1489,7 @@
                 "type": "qrCodeEndGame",
                 "data": {
                     "id": "a7f3k9",
-                    "url": "matn QR code inja bezar",
+                    "url": "abcd",
                     "name": "Unit 1"
                 }
             };
@@ -1506,6 +1503,8 @@
             console.error("خطا: unityInstance هنوز تعریف نشده است.");
         }
     }
+
+    qrUnityFunc()
 </script>
 
 
