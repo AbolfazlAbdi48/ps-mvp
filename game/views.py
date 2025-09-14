@@ -108,6 +108,19 @@ class GameplayView(View):
 
         return JsonResponse(response_data)
 
+@method_decorator(login_required, name='dispatch')
+class SetCashableScoreView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            user_profile = request.user.profile
+            user_profile.cashable_score = 1
+            user_profile.save()
+
+            return JsonResponse({'status': 'success', 'message': 'Cashable score has been reset to 1.'})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'An error occurred: {str(e)}'}, status=500)
+
 
 @method_decorator(login_required, name='dispatch')
 class LeaderBoardView(View):

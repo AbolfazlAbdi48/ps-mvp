@@ -462,7 +462,7 @@
         }
 
         .visible {
-           left: 50% !important;
+            left: 50% !important;
         }
 
         /* card */
@@ -964,10 +964,16 @@
 
 <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
 <div id="startARDiv" class="ctaDiv">
-    <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
-    <p style="text-align: center; width:60vw">This augmented reality experience requires access to your device's camera
-        and motion sensors</p>
-    <button id="startARButton" style="display:none" onclick="StartAR()">ALLOW ACCESS</button>
+    {% if request.user.profile.cashable_score >= 1 %}
+        <p dir="rtl" style="text-align: center; width:60vw">شما QR CODE و حباب هارو پیدا کردید، منتظر اعلام نتیجه بازی
+            باشید!</p>
+    {% else %}
+        <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
+        <p style="text-align: center; width:60vw">This augmented reality experience requires access to your device's
+            camera
+            and motion sensors</p>
+        <button id="startARButton" style="display:none" onclick="StartAR()">ALLOW ACCESS</button>
+    {% endif %}
 </div>
 <div id="screenshotDiv" style="display: none;" class="ctaDiv">
     <div style="position:relative; background-color:white; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25);">
@@ -1061,7 +1067,7 @@
                             <span class="info-label">حباب های پیدا شده</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-value">5</span>
+                            <span class="info-value">50</span>
                             <span class="info-label">مجموع حباب ها</span>
                         </div>
                     </div>
@@ -1144,10 +1150,17 @@
     <div class="container" id="container" style="position:absolute;left: 50%;transform: translateX(-50%);top:100px">
         <div class="box">
             <span class="title">سیگنال بازی دریافت شد</span>
-            <div>
-                <strong>به اطراف برو و حباب هارو پیدا کن</strong>
-                <p>در طول بازی باید 10 حباب پیدا کنی</p>
-            </div>
+            {% if request.user.profile.total_score >= 50 %}
+                <div dir="rtl">
+                    <strong>50 حباب رو پیدا کردی</strong>
+                    <p>حالا برو و QR CODE نهایی رو پیدا کن</p>
+                </div>
+            {% else %}
+                <div>
+                    <strong>به اطراف برو و حباب هارو پیدا کن</strong>
+                    <p>در طول بازی باید 50 حباب پیدا کنی</p>
+                </div>
+            {% endif %}
             <button class="play-button" onclick="closePopUp()">بریم بازی کنیم</button>
         </div>
     </div>
@@ -1193,9 +1206,9 @@
                 dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
                 frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
                 codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
-                // dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
-                // frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
-                // codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
+                //dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
+                //frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
+                //codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "DefaultCompany",
                 productName: "TehranAR",
@@ -1409,13 +1422,35 @@
 
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
 
-                callUnityFunc();
-                qrUnityFunc();
+                if ("{{ request.user.profile.total_score }}" >= "50") {
+                    qrUnityFunc();
+                } else {
+                    callUnityFunc();
+                }
             }
 
             if (messageData.type === 'qrFound') {
-                console.log(messageData)
-                alert("QRCode Founded")
+                fetch("/api/game/v2/play/cashable", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                alert("بازی تمام شد ! منتظر اعلام نتایح بازی بمون...")
+                window.location.reload()
             }
 
             if (messageData.type === 'clickedUnit') {
@@ -1431,9 +1466,14 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
-                            callUnityFunc();
                             showAnimation();
                             document.getElementById("info-value").innerHTML = data.user_score
+                            if ("{{ request.user.profile.total_score }}" >= "50") {
+                                qrUnityFunc()
+                                document.getElementById('container').style.display = 'block';
+                            } else {
+                                callUnityFunc();
+                            }
                         } else {
                             console.error("خطا در آپدیت پروفایل:", data.message);
                         }
