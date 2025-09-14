@@ -1410,6 +1410,7 @@
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
 
                 callUnityFunc();
+                qrUnityFunc();
             }
 
             if (messageData.type === 'qrFound') {
@@ -1465,6 +1466,27 @@
         return cookieValue;
     }
 
+    function qrUnityFunc() {
+        if (window.unityInstance && window.unityInstance.SendMessage) {
+            const data = {
+                "type": "qrCodeEndGame",
+                "data": {
+                    "id": "a7f3k9",
+                    "url": "abcd",
+                    "name": "Unit 1"
+                }
+            };
+
+            const jsonString = JSON.stringify(data);
+
+            window.unityInstance.SendMessage('CommunicationWithJS', 'ReceiveMessageFromJS', jsonString);
+
+            console.log("کیوآرکد به یونیتی ارسال شد.");
+        } else {
+            console.error("خطا: unityInstance هنوز تعریف نشده است.");
+        }
+    }
+
     function callUnityFunc() {
         if (window.unityInstance && window.unityInstance.SendMessage) {
             const djangoData = JSON.parse('{{ unity_data|safe|escapejs }}');
@@ -1482,29 +1504,6 @@
             console.error("خطا: unityInstance هنوز تعریف نشده است.");
         }
     }
-
-    function qrUnityFunc() {
-        if (window.unityInstance && window.unityInstance.SendMessage) {
-            const data = {
-                "type": "qrCodeEndGame",
-                "data": {
-                    "id": "a7f3k9",
-                    "url": "abcd",
-                    "name": "Unit 1"
-                }
-            };
-
-            const jsonString = JSON.stringify(data);
-
-            window.unityInstance.SendMessage('CommunicationWithJS', 'ReceiveMessageFromJS', jsonString);
-
-            console.log("پیام به یونیتی ارسال شد.");
-        } else {
-            console.error("خطا: unityInstance هنوز تعریف نشده است.");
-        }
-    }
-
-    qrUnityFunc()
 </script>
 
 
