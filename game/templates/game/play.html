@@ -1468,7 +1468,7 @@
                         if (data.status === 'success') {
                             showAnimation();
                             document.getElementById("info-value").innerHTML = data.user_score
-                            if ("{{ request.user.profile.total_score }}" >= "50") {
+                            if (data.user_score >= 50) {
                                 qrUnityFunc()
                                 document.getElementById('container').style.display = 'block';
                             } else {
