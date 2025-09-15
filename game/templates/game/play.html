@@ -1173,7 +1173,7 @@
                 <strong>50 حباب رو پیدا کردی</strong>
                 <p>حالا برو و QR CODE نهایی رو پیدا کن</p>
             </div>
-            <button class="play-button" onclick="closePopUp()">ادامه بازی</button>
+            <button class="play-button" onclick="closeQRPopUp()">ادامه بازی</button>
         </div>
     </div>
 </div>
@@ -1482,7 +1482,7 @@
                             document.getElementById("info-value").innerHTML = data.user_score
                             if (data.user_score >= 50) {
                                 qrUnityFunc()
-                                document.getElementById('container').style.display = 'block';
+                                document.getElementById('container-qr').style.display = 'block';
                             } else {
                                 callUnityFunc();
                             }
@@ -1562,6 +1562,9 @@
 <script>
     function closePopUp() {
         document.getElementById('container').style.display = 'none';
+    }
+    function closeQRPopUp() {
+        document.getElementById('container-qr').style.display = 'none';
     }
 
     function toggleTable() {
