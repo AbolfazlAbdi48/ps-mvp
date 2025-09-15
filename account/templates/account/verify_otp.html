@@ -6,9 +6,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>دوزبین</title>
     <style>
+        @font-face {
+            font-family: 'YekanBakhFaNum';
+            src: url('https://www.doozbin.com/wp-content/uploads/2024/10/YekanBakhFaNum-ExtraBlack.woff2') format('woff2');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'YekanBakhFaNum';
+            src: url('https://www.doozbin.com/wp-content/uploads/2024/10/YekanBakhFaNum-Bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
         body {
+            font-family: 'YekanBakhFaNum', sans-serif !important;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -59,7 +76,6 @@
             outline: none;
             border: 2px solid #ffffff;
             margin: 8px 0;
-            font-family: monospace;
             border-radius: 4px;
         }
 
@@ -152,7 +168,6 @@
             font-size: 0.875rem;
             line-height: 1.25rem;
             text-align: center;
-            font-family: monospace;
         }
 
         .signup-link a {
@@ -169,7 +184,6 @@
         .form-title {
             font-size: 1.25rem;
             line-height: 1.75rem;
-            font-family: monospace;
             font-weight: 600;
             text-align: center;
             color: #fff;
@@ -188,7 +202,6 @@
             margin-top: -0.5rem;
             font-size: 1.9rem;
             font-weight: 800;
-            font-family: Arial, Helvetica, sans-serif;
             text-align: center;
             -webkit-text-stroke: #fff 0.1rem;
             letter-spacing: 0.2rem;
@@ -347,8 +360,8 @@
 <div class="center">
     <form class="form" method="post">
         {% csrf_token %}
-        <div class="form-title"><span>Send OTP To {{ phone }}</span></div>
-        <div class="title-2"><span>DOOZBIN</span></div>
+        <div class="title-2" style="margin-bottom: 8px"><span>DOOZBIN</span></div>
+        <div class="form-title"><span>کد به {{ phone }} ارسال شد</span></div>
         <div class="input-container">
             {{ form.code }}
             <span> </span>
@@ -362,13 +375,8 @@
         </section>
 
         <button class="submit" type="submit">
-            <span class="sign-text">Sign in</span>
+            <span class="sign-text">ورود</span>
         </button>
-
-        <p class="signup-link">
-            No account?
-            <a class="up" href="">Sign up!</a>
-        </p>
     </form>
 </div>
 <!-- end sign up -->
