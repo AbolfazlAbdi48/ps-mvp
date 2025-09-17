@@ -964,9 +964,9 @@
 
 <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
 <div id="startARDiv" class="ctaDiv">
-    {% if request.user.profile.cashable_score >= 1 %}
-        <p dir="rtl" style="text-align: center; width:60vw">شما QR CODE و حباب هارو پیدا کردید، منتظر اعلام نتیجه بازی
-            باشید!</p>
+    {% if request.user.profile.total_score >= 100 %}
+        <p dir="rtl" style="text-align: center; width:60vw">تمام حباب هارو پیدا کردی، به گنجه اطلس مال برو و منتظر
+            نتایج بازی باش!</p>
     {% else %}
         <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
         <p style="text-align: center; width:60vw">This augmented reality experience requires access to your device's
@@ -1042,21 +1042,7 @@
                                 role="progressbar"
                                 class="progress-bar"
                         >
-                            <div class="progress-line" style="width:
-                                    {% if request.user.profile.total_score == 0 %}
-                                        0
-                                    {% elif request.user.profile.total_score == 1 %}
-                                        20%
-                                    {% elif request.user.profile.total_score == 2 %}
-                                        40%
-                                    {% elif request.user.profile.total_score == 3 %}
-                                        60%
-                                    {% elif request.user.profile.total_score == 4 %}
-                                        80%
-                                    {% elif request.user.profile.total_score >= 5 %}
-                                        100%
-                                    {% endif %}
-                                    "></div>
+                            <div class="progress-line" id="progress-line" style="width:{{ request.user.profile.total_score }}%"></div>
                             <div class="progress-particles"></div>
                         </div>
                     </div>
@@ -1067,7 +1053,7 @@
                             <span class="info-label">حباب های پیدا شده</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-value">50</span>
+                            <span class="info-value">100</span>
                             <span class="info-label">مجموع حباب ها</span>
                         </div>
                     </div>
@@ -1150,17 +1136,10 @@
     <div class="container" id="container" style="position:absolute;left: 50%;transform: translateX(-50%);top:100px">
         <div class="box">
             <span class="title">سیگنال بازی دریافت شد</span>
-            {% if request.user.profile.total_score >= 50 %}
-                <div dir="rtl">
-                    <strong>50 حباب رو پیدا کردی</strong>
-                    <p>حالا برو و QR CODE نهایی رو پیدا کن</p>
-                </div>
-            {% else %}
-                <div>
-                    <strong>به اطراف برو و حباب هارو پیدا کن</strong>
-                    <p>در طول بازی باید 50 حباب پیدا کنی</p>
-                </div>
-            {% endif %}
+            <div>
+                <strong>به اطراف برو و حباب هارو پیدا کن</strong>
+                <p>از ساعت 7 تا 8 شب باید 100 حباب پیدا کنی</p>
+            </div>
             <button class="play-button" onclick="closePopUp()">بریم بازی کنیم</button>
         </div>
     </div>
@@ -1434,11 +1413,11 @@
 
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
 
-                if ("{{ request.user.profile.total_score }}" >= "50") {
-                    qrUnityFunc();
-                } else {
-                    callUnityFunc();
-                }
+                //if ("{{ request.user.profile.total_score }}" >= "50") {
+                //    qrUnityFunc();
+                //} else {
+                callUnityFunc();
+                //}
             }
 
             if (messageData.type === 'qrFound') {
@@ -1480,12 +1459,16 @@
                         if (data.status === 'success') {
                             showAnimation();
                             document.getElementById("info-value").innerHTML = data.user_score
-                            if (data.user_score >= 50) {
-                                qrUnityFunc()
-                                document.getElementById('container-qr').style.display = 'block';
-                            } else {
-                                callUnityFunc();
+                            if (data.user_score >= 100) {
+                                // qrUnityFunc()
+                                //document.getElementById('container-qr').style.display = 'block';
+                                alert("تبریک، 100 حباب رو زدی، برای اعلام نتایج به گنجه اطلس مال برو!")
+                                window.location.reload()
                             }
+                            callUnityFunc();
+
+                            var progressBarCount = document.getElementById("progress-line")
+                            progressBarCount.width = `${data.user_score}%`
                         } else {
                             console.error("خطا در آپدیت پروفایل:", data.message);
                         }
@@ -1563,6 +1546,7 @@
     function closePopUp() {
         document.getElementById('container').style.display = 'none';
     }
+
     function closeQRPopUp() {
         document.getElementById('container-qr').style.display = 'none';
     }

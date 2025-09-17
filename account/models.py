@@ -38,9 +38,11 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     total_score = models.IntegerField(default=0)
     cashable_score = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def show_phone_number(self):
         return f"{self.user.username[:4]}xxx{self.user.username[7:11]}"
 
     def __str__(self):
-        return f'Profile of {self.user.username} - {self.user.nickname}'
+        return f'{self.user.username}'

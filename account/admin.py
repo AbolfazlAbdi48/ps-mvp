@@ -34,5 +34,5 @@ class OtpAdmin(admin.ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("user__nickname", "total_score", "cashable_score")
+    list_display = ("user__username", "total_score", "updated_at")
     search_fields = ("user__nickname",)
