@@ -1224,12 +1224,12 @@
 
         document.getElementById('startARDiv').style.display = 'none';
         createUnityInstance(document.querySelector("#unity-canvas"), {
-                //dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
-                //frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
-                //codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
-                dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
-                frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
-                codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
+                dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
+                frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
+                codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
+                //dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
+                //frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
+                //codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "DefaultCompany",
                 productName: "TehranAR",
@@ -1626,10 +1626,10 @@
         const timerElement = document.getElementById('timer');
 
         // تعیین وضعیت فعلی نسبت به بازه زمانی
-        if (currentHour < 15) {
+        if (currentHour < 19) {
             // قبل از شروع بازه (قبل از 15:00)
             const endTime = new Date(now);
-            endTime.setHours(15, 0, 0, 0);
+            endTime.setHours(19, 0, 0, 0);
             const timeDiff = endTime - now;
 
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
@@ -1638,10 +1638,10 @@
 
             timerElement.textContent =
                 `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else if (currentHour === 15 || (currentHour === 19 && currentMinutes < 1)) {
+        } else if (currentHour === 19 || (currentHour === 20 && currentMinutes < 30)) {
             // درون بازه زمانی (15:00 تا 16:30)
             const endTime = new Date(now);
-            endTime.setHours(19, 1, 0, 0);
+            endTime.setHours(20, 30, 0, 0);
             const timeDiff = endTime - now;
 
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
