@@ -1224,12 +1224,12 @@
 
         document.getElementById('startARDiv').style.display = 'none';
         createUnityInstance(document.querySelector("#unity-canvas"), {
-                dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
-                frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
-                codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
-                //dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
-                //frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
-                //codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
+                //dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
+                //frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
+                //codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
+                dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
+                frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
+                codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "DefaultCompany",
                 productName: "TehranAR",
@@ -1615,7 +1615,6 @@
 </script>
 
 <script>
-    //timer
     let alertShown = false;
 
     function updateTimer() {
@@ -1624,35 +1623,36 @@
         const currentMinutes = now.getMinutes();
         const currentSeconds = now.getSeconds();
 
+        const timerElement = document.getElementById('timer');
+
         // تعیین وضعیت فعلی نسبت به بازه زمانی
-        if (currentHour < 12) {
-            // قبل از شروع بازه
-            const startTime = new Date(now);
-            startTime.setHours(11, 0, 0, 0);
-            const timeDiff = startTime - now;
-
-            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-            document.getElementById('timer').textContent =
-                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else if (currentHour >= 12 && currentHour < 13) {
-            // درون بازه زمانی
+        if (currentHour < 15) {
+            // قبل از شروع بازه (قبل از 15:00)
             const endTime = new Date(now);
-            endTime.setHours(13, 0, 0, 0);
+            endTime.setHours(15, 0, 0, 0);
             const timeDiff = endTime - now;
 
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-            document.getElementById('timer').textContent =
+            timerElement.textContent =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else if (currentHour === 15 || (currentHour === 19 && currentMinutes < 1)) {
+            // درون بازه زمانی (15:00 تا 16:30)
+            const endTime = new Date(now);
+            endTime.setHours(19, 1, 0, 0);
+            const timeDiff = endTime - now;
+
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            timerElement.textContent =
                 `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         } else {
-            // بعد از پایان بازه زمانی
-            document.getElementById('timer').textContent = "00:00:00";
-            document.getElementById("startARButton").style.display = "none"
+            // بعد از پایان بازه زمانی (بعد از 16:30)
+            timerElement.textContent = "00:00:00";
 
             // نمایش alert و رفرش صفحه (فقط یکبار)
             if (!alertShown) {
