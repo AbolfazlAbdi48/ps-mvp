@@ -1041,7 +1041,7 @@
     <div class="info-button" onclick="toggleInfoPanel()">x</div>
     <div class="timer-section">
         <div class="timer" id="timer">00:00:00</div>
-        <p>تا پایان</p>
+        <p id="timer-text">تا پایان</p>
     </div>
 
     <div class="progress-app" id="progress-app" style="
@@ -1624,6 +1624,7 @@
         const currentSeconds = now.getSeconds();
 
         const timerElement = document.getElementById('timer');
+        const timerText = document.getElementById('timer-text');
 
         // تعیین وضعیت فعلی نسبت به بازه زمانی
         if (currentHour < 19) {
@@ -1631,6 +1632,8 @@
             const endTime = new Date(now);
             endTime.setHours(19, 0, 0, 0);
             const timeDiff = endTime - now;
+
+            timerText.innerHTML = "تا شروع"
 
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1643,6 +1646,7 @@
             const endTime = new Date(now);
             endTime.setHours(20, 30, 0, 0);
             const timeDiff = endTime - now;
+            timerText.innerHTML = "مانده تا پایان"
 
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
