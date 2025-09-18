@@ -444,7 +444,7 @@
             height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, #00CFFF, #5232F6, #8B6CBB);
-            color: white;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -461,8 +461,32 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
 
+        .timer-section {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 90px;
+            height: 50px;
+            color: #ffffff;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .timer-section .timer {
+            font-size: 1.5rem;
+        }
+
+        .timer-section p {
+            font-size: 0.9rem;
+            margin: 0 0 0 28px;
+        }
+
         .visible {
             left: 50% !important;
+        }
+
+        .visible-block {
+            display: block !important;
         }
 
         /* card */
@@ -1014,7 +1038,11 @@
 
 
 <div style="display: none;" id="ui-section">
-    <div class="info-button" onclick="toggleInfoPanel()">i</div>
+    <div class="info-button" onclick="toggleInfoPanel()">x</div>
+    <div class="timer-section">
+        <div class="timer" id="timer">00:00:00</div>
+        <p>تا پایان</p>
+    </div>
 
     <div class="progress-app" id="progress-app" style="
         position: fixed;
@@ -1042,7 +1070,8 @@
                                 role="progressbar"
                                 class="progress-bar"
                         >
-                            <div class="progress-line" id="progress-line" style="width:{{ request.user.profile.total_score }}%"></div>
+                            <div class="progress-line" id="progress-line"
+                                 style="width:{{ request.user.profile.total_score }}%"></div>
                             <div class="progress-particles"></div>
                         </div>
                     </div>
@@ -1083,7 +1112,7 @@
     </div>
 
     <div class="button-container" style="position:fixed; bottom: 0;left: 0;width: 100%">
-        <button onclick="toggleInfoPanel()" class="button">
+        <button onclick="toggleProgressPanel()" class="button">
             <svg
                     class="icon"
                     stroke="currentColor"
@@ -1133,7 +1162,8 @@
         </button>
     </div>
 
-    <div class="container" id="container" style="position:absolute;left: 50%;transform: translateX(-50%);top:100px">
+    <div class="container visible-block" id="container"
+         style="position:absolute;display:none;left: 50%;transform: translateX(-50%);top:100px">
         <div class="box">
             <span class="title">سیگنال بازی دریافت شد</span>
             <div>
@@ -1410,7 +1440,6 @@
             if (messageData.type === 'startGame') {
                 console.log('startGame')
                 document.getElementById("ui-section").style.display = "block"
-
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
 
                 //if ("{{ request.user.profile.total_score }}" >= "50") {
@@ -1544,7 +1573,15 @@
 
 <script>
     function closePopUp() {
-        document.getElementById('container').style.display = 'none';
+        {#document.getElementById('container').style.display = 'none';#}
+        const panel = document.getElementById('container');
+        panel.classList.toggle("visible-block")
+        const icon = document.querySelector('.info-button');
+        if (panel.classList.contains('visible-block')) {
+            icon.textContent = '×';
+        } else {
+            icon.textContent = 'i';
+        }
     }
 
     function closeQRPopUp() {
@@ -1558,17 +1595,81 @@
     }
 
     function toggleInfoPanel() {
-        const panel = document.getElementById('progress-app');
+        const panel = document.getElementById('container');
         const icon = document.querySelector('.info-button');
 
-        panel.classList.toggle('visible');
+        panel.classList.toggle('visible-block');
 
-        if (panel.classList.contains('visible')) {
+        if (panel.classList.contains('visible-block')) {
             icon.textContent = '×';
         } else {
             icon.textContent = 'i';
         }
     }
+
+    function toggleProgressPanel() {
+        const panel = document.getElementById('progress-app');
+        panel.classList.toggle('visible');
+
+    }
+</script>
+
+<script>
+    //timer
+    let alertShown = false;
+
+    function updateTimer() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const currentSeconds = now.getSeconds();
+
+        // تعیین وضعیت فعلی نسبت به بازه زمانی
+        if (currentHour < 12) {
+            // قبل از شروع بازه
+            const startTime = new Date(now);
+            startTime.setHours(11, 0, 0, 0);
+            const timeDiff = startTime - now;
+
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').textContent =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else if (currentHour >= 12 && currentHour < 13) {
+            // درون بازه زمانی
+            const endTime = new Date(now);
+            endTime.setHours(13, 0, 0, 0);
+            const timeDiff = endTime - now;
+
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').textContent =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            // بعد از پایان بازه زمانی
+            document.getElementById('timer').textContent = "00:00:00";
+            document.getElementById("startARButton").style.display = "none"
+
+            // نمایش alert و رفرش صفحه (فقط یکبار)
+            if (!alertShown) {
+                alert("بازی تموم شد، برای مشخص شدن نتیجه خودت رو به گنجه اطلس مال برسون");
+                alertShown = true;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            }
+        }
+    }
+
+    // به روزرسانی تایمر هر ثانیه
+    setInterval(updateTimer, 1000);
+
+    // فراخوانی اولیه تایمر
+    updateTimer();
 </script>
 </body>
 </html>
