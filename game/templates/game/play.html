@@ -1660,10 +1660,10 @@
 
             // نمایش alert و رفرش صفحه (فقط یکبار)
             if (!alertShown) {
-                alert("بازی تموم شد، برای مشخص شدن نتیجه خودت رو به گنجه اطلس مال برسون");
+                alert("زمان بازی به پایان رسید!");
                 alertShown = true;
                 setTimeout(() => {
-                    window.location.reload();
+                    window.location.href = "https://avr.doozbin.com/api/game/v2/leaderboard/";
                 }, 100);
             }
         }

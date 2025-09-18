@@ -125,7 +125,7 @@ class SetCashableScoreView(View):
 @method_decorator(login_required, name='dispatch')
 class LeaderBoardView(View):
     def get(self, request, *args, **kwargs):
-        profiles = Profile.objects.all().order_by("-total_score")[:10]
+        profiles = Profile.objects.all().order_by("-total_score", "updated_at")[:5]
         context = {
             "profiles": profiles
         }
