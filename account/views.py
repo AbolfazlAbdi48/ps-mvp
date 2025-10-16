@@ -48,7 +48,7 @@ def send_otp_view(request):
             code = OTP.generate_code()
             OTP.objects.create(phone_number=phone_number, code=code)
 
-            # send_verification_code(code, phone_number)
+            send_verification_code(code, phone_number)
 
             return redirect('account:otp-login-verify', phone=phone_number)
     else:

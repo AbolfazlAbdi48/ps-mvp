@@ -37,7 +37,13 @@
                         SK
                     </div>
                     <div class="text-center">
-                        <div class="font-semibold text-sm">{{ profiles_2.user.nickname }}</div>
+                        <div class="font-semibold text-sm">
+                            {% if profiles_2.user.nickname %}
+                            	{{ profiles_2.user.nickname }}
+                                {% else %}
+                                {{ profiles_2.show_phone_number }}
+                            {% endif %}
+                        </div>
                         <div class="text-xs text-secondary">{{ profiles_2.total_score }} امتیاز</div>
                     </div>
                 </div>
@@ -49,7 +55,11 @@
                         NJ
                     </div>
                     <div class="text-center">
-                        <div class="font-semibold">{{ profiles_1.user.nickname }}</div>
+                        <div class="font-semibold">{% if profiles_1.user.nickname %}
+                            	{{ profiles_1.user.nickname }}
+                                {% else %}
+                                {{ profiles_1.show_phone_number }}
+                            {% endif %}</div>
                         <div class="text-sm text-primary font-bold">{{ profiles_1.total_score }} امتیاز</div>
                     </div>
                 </div>
@@ -61,7 +71,11 @@
                         CQ
                     </div>
                     <div class="text-center">
-                        <div class="font-semibold text-sm">{{ profiles_3.user.nickname }}</div>
+                        <div class="font-semibold text-sm">{% if profiles_3.user.nickname %}
+                            	{{ profiles_3.user.nickname }}
+                                {% else %}
+                                {{ profiles_3.show_phone_number }}
+                            {% endif %}</div>
                         <div class="text-xs text-accent">{{ profiles_3.total_score }} امتیاز</div>
                     </div>
                 </div>
@@ -78,7 +92,11 @@
                                 {{ profile.user.nickname|truncatechars:2 }}
                             </div>
                             <div>
-                                <div class="font-semibold">{{ profile.user.nickname }}</div>
+                                <div class="font-semibold">{% if profile.user.nickname %}
+                            	{{ profile.user.nickname }}
+                                {% else %}
+                                {{ profile.show_phone_number }}
+                            {% endif %}</div>
                                 <div class="text-sm text-muted-foreground">{{ profile.total_score }} امتیاز</div>
                             </div>
                         </div>
@@ -98,7 +116,11 @@
                             {{ request.user.nickname|truncatechars:1 }}
                         </div>
                         <div>
-                            <div class="font-semibold">{{ request.user.nickname }} (شما)</div>
+                            <div class="font-semibold">{% if request.user.nickname %}
+                            	{{ request.user.nickname }}
+                                {% else %}
+                                {{ request.user.profile.show_phone_number }}
+                            {% endif %} (شما)</div>
                             <div class="text-sm text-primary font-semibold">{{ request.user.profile.total_score }} امتیاز</div>
                         </div>
                     </div>
