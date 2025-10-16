@@ -1,0 +1,208 @@
+{% extends "game/base.html" %}
+{% block title %}
+    دوزبین | تنظیمات
+{% endblock %}
+
+{% block main %}
+    <!-- Settings Page -->
+    <div id="settings-page" class="page active">
+        <div class="p-6 space-y-6">
+            <!-- Header -->
+            <div class="space-y-2 animate-fade-in">
+                <h1 class="text-3xl font-rajdhani font-bold">تنظیمات</h1>
+                <p class="text-muted-foreground">مدیریت تنظیمات شما</p>
+            </div>
+
+            <!-- Settings Sections -->
+            <div class="space-y-4">
+                <!-- Language -->
+                <div class="space-y-3">
+                    <h3 class="font-rajdhani font-bold text-lg">زبان</h3>
+                    <div class="card p-4">
+                        <select class="bg-transparent border-none focus:ring-0">
+                            <option>فارسی</option>
+                            <option>English(coming soon)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="space-y-3">
+                    <div class="space-y-3">
+                        <h3 class="font-rajdhani font-bold text-lg">اعلان‌ها</h3>
+
+                        <div class="card p-4 flex items-center justify-between opacity-50 cursor-not-allowed">
+                            <div class="flex items-center gap-2">
+                                <div>
+                                    <div class="font-semibold">دعوت به بازی <span class="text-sm text-muted-foreground">به زودی</span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">دریافت اعلان برای دعوت به بازی</div>
+                                </div>
+                            </div>
+                            <!-- غیرفعال کردن toggle -->
+                            <label class="toggle">
+                                <input type="checkbox" disabled>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div class="card p-4 flex items-center justify-between">
+                        <div>
+                            <div class="font-semibold">بروزرسانی تورنمنت‌ها</div>
+                            <div class="text-sm text-muted-foreground">دریافت اعلان دربارهٔ تورنمنت‌ها</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="card p-4 flex items-center justify-between">
+                        <div>
+                            <div class="font-semibold">افکت‌های صوتی</div>
+                            <div class="text-sm text-muted-foreground">فعال‌سازی صداهای درون بازی</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Account -->
+                <div class="space-y-3">
+                    <h3 class="font-rajdhani font-bold text-lg">حساب کاربری</h3>
+
+
+                    <!-- Button -->
+                    <button onclick="showModal()"
+                            class="card p-4 w-full flex items-center justify-between hover:border-primary/40">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>سیاست حفظ حریم خصوصی</span>
+                        </div>
+                        <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+
+
+                    <!-- Modal -->
+                    <!-- Modal -->
+                    <div id="myModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                        <div class="bg-black rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+                            <h2 class="text-xl font-bold mb-4 text-white">قوانین</h2>
+                            <p class="mb-4 text-gray-600">اینجا متن قوانین یا توضیحات مربوطه نوشته می‌شود.</p>
+                            <button onclick="hideModal()" class="btn btn-neon w-full">بستن</button>
+                        </div>
+                    </div>
+
+
+                    <button onclick="showModalInfo()"
+                            class="card p-4 w-full flex items-center justify-between hover:border-primary/40">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>شرایط استفاده</span>
+                        </div>
+                        <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+
+
+                    <!-- Modal -->
+                    <div id="myModalInfo"
+                         class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                        <div class="bg-black rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+                            <h2 class="text-xl font-bold mb-4 text-white">توضیحات بازی</h2>
+                            <p class="mb-4 text-gray-600">اینجا توضیحات مربوطه نوشته می‌شود.</p>
+                            <button onclick="hideModalInfo()" class="btn btn-neon w-full">بستن</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="space-y-3">
+                    <h3 class="font-rajdhani font-bold text-lg text-destructive">منطقهٔ خطر</h3>
+
+                    <button onclick="navigateTo('language-page')"
+                            class="card p-4 w-full flex items-center justify-between border-destructive/40 hover:border-destructive hover:bg-destructive/10">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            <span class="text-destructive font-semibold">خروج از حساب</span>
+                        </div>
+                        <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bottom Navigation -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 border-t z-50 backdrop-blur-glass"
+         style="background: hsl(var(--card) / 0.8); border-color: hsl(var(--primary) / 0.2)">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-around py-3">
+                <button onclick="navigateToUrl('/')" data-page="game-page"
+                        class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all text-muted-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
+                    </svg>
+
+                </button>
+
+                <button onclick="navigateToUrl('/auth/profile/')" data-page="profile-page"
+                        class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all text-muted-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </button>
+
+                <button onclick="navigateToUrl('/api/game/v2/leaderboard/')" data-page="leaderboard-page"
+                        class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all text-muted-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                </button>
+
+                <button style="color: hsl(var(--primary));" onclick="navigateToUrl('/api/game/v2/settings/')"
+                        data-page="settings-page"
+                        class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all text-muted-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <div class="w-1 h-1 rounded-full shadow-glow-sm" style="background: hsl(var(--primary));"></div>
+                </button>
+
+                <button onclick="navigateToUrl('/api/game/v2/selected/')" data-page="selected-game-page"
+                        class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all text-muted-foreground">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+{% endblock %}

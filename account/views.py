@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.db import models
 from django.shortcuts import redirect, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -7,7 +8,7 @@ from rest_framework import status
 
 from extensions.sms import send_verification_code
 from .forms import OTPVerifyForm, PhoneForm
-from .models import OTP, User
+from .models import OTP, User, Profile
 from .serializers import PhoneSerializer, OTPVerifySerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -47,7 +48,7 @@ def send_otp_view(request):
             code = OTP.generate_code()
             OTP.objects.create(phone_number=phone_number, code=code)
 
-            send_verification_code(code, phone_number)
+            # send_verification_code(code, phone_number)
 
             return redirect('account:otp-login-verify', phone=phone_number)
     else:
@@ -88,3 +89,25 @@ def verify_otp_view(request, phone):
         form = OTPVerifyForm()
 
     return render(request, 'account/verify_otp.html', {'form': form, 'phone': phone})
+
+
+def profile_view(request):
+    all_profiles = Profile.objects.all().order_by("-total_score", "updated_at")
+
+    # اگر کاربر لاگین کرده، رتبه‌اش را پیدا کن
+    user_rank = None
+    if request.user.is_authenticated:
+        try:
+            user_profile = Profile.objects.get(user=request.user)
+            # پیدا کردن رتبه کاربر در لیست کامل
+            user_rank = all_profiles.filter(
+                models.Q(total_score__gt=user_profile.total_score) |
+                models.Q(total_score=user_profile.total_score, updated_at__lt=user_profile.updated_at)
+            ).count() + 1
+        except Profile.DoesNotExist:
+            user_rank = None
+            
+    context = {
+        'user_rank': user_rank
+    }
+    return render(request, "account/profile.html", context)

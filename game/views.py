@@ -1,3 +1,4 @@
+from django.db import models
 from rest_framework.views import APIView
 from django.core.serializers.json import DjangoJSONEncoder
 import json
@@ -108,6 +109,7 @@ class GameplayView(View):
 
         return JsonResponse(response_data)
 
+
 @method_decorator(login_required, name='dispatch')
 class SetCashableScoreView(View):
     def post(self, request, *args, **kwargs):
@@ -125,9 +127,30 @@ class SetCashableScoreView(View):
 @method_decorator(login_required, name='dispatch')
 class LeaderBoardView(View):
     def get(self, request, *args, **kwargs):
-        profiles = Profile.objects.all().order_by("-total_score", "updated_at")[:5]
+        all_profiles = Profile.objects.all().order_by("-total_score", "updated_at")
+
+        # گرفتن 6 پروفایل برتر
+        top_profiles = list(all_profiles[:6])
+
+        # اگر کاربر لاگین کرده، رتبه‌اش را پیدا کن
+        user_rank = None
+        if request.user.is_authenticated:
+            try:
+                user_profile = Profile.objects.get(user=request.user)
+                # پیدا کردن رتبه کاربر در لیست کامل
+                user_rank = all_profiles.filter(
+                    models.Q(total_score__gt=user_profile.total_score) |
+                    models.Q(total_score=user_profile.total_score, updated_at__lt=user_profile.updated_at)
+                ).count() + 1
+            except Profile.DoesNotExist:
+                user_rank = None
+
         context = {
-            "profiles": profiles
+            "profiles_1": top_profiles[0] if len(top_profiles) > 0 else None,
+            "profiles_2": top_profiles[1] if len(top_profiles) > 1 else None,
+            "profiles_3": top_profiles[2] if len(top_profiles) > 2 else None,
+            "profiles": top_profiles[3:6] if len(top_profiles) > 3 else [],
+            "user_rank": user_rank,
         }
         return render(request, 'game/leaderboard.html', context)
 
@@ -153,3 +176,11 @@ class NearbyBundlesAPIView(APIView):
 
         serializer = LocationWithBundlesSerializer(nearby_locations, many=True)
         return Response({"results": serializer.data})
+
+
+def settings_view(request):
+    return render(request, "game/settings.html")
+
+
+def selected_games_view(request):
+    return render(request, "game/selected.html")
