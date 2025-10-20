@@ -1123,6 +1123,7 @@
 
     function StartAR() {
         canvas.style.width = window.innerWidth + "px";
+        document.getElementById("startARButton").style.display = "none";
         canvas.style.height = window.innerHeight + "px";
 
         document.getElementById('startARDiv').style.display = 'none';
@@ -1335,7 +1336,6 @@
             const messageData = JSON.parse(i_msg);
 
             if (messageData.type === 'startGame') {
-                document.getElementById("startARButton").style.display = "none";
                 console.log('startGame')
                 document.getElementById("ui-section").style.display = "block"
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
