@@ -462,7 +462,7 @@
                 </div>
 
                 <div class="scroll-container pb-4">
-                    <div class="flex gap-4" style="width: max-content;"  onclick="navigateTo('ar-game-page')">
+                    <div class="flex gap-4" style="width: max-content;" onclick="navigateTo('ar-game-page')">
                         <!-- Live Game Cards -->
                         <div class="w-72 card animate-slide-in" style="flex-shrink: 0;">
                             <div class="relative h-40 rounded-t-2xl overflow-hidden"
@@ -580,9 +580,7 @@
             <!-- AR Access Controls -->
             <div id="startARDiv" class="ctaDiv" style="">
                 <select id="chooseCamSel" style="display: none !important; opacity: 0" onchange="SelectCam()"></select>
-                <p style="text-align: center; width:60vw">This augmented reality experience requires access to your
-                    device's
-                    camera and motion sensors</p>
+                <p style="text-align: center; width:60vw">روی شروع بازی کلیک کن و دسترسی دوربین رو فعال کن</p>
             </div>
 
             <!-- Screenshot Preview -->
@@ -643,7 +641,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span id="coin-counter" class="font-rajdhani font-bold text-2xl text-foreground">{{ request.user.profile.total_score }}</span>
+                        <span id="coin-counter"
+                              class="font-rajdhani font-bold text-2xl text-foreground">{{ request.user.profile.total_score }}</span>
                     </div>
 
                     <!-- AR Scan indicator -->
@@ -657,7 +656,7 @@
                 </div>
 
                 <!-- Center Area - AR Scanning Reticle -->
-                <div class="flex-1 flex items-center justify-center">
+                <div class="flex-1 flex items-center justify-center" style="opacity: 0">
                     <div class="relative w-64 h-64">
                         <!-- Scanning reticle -->
                         <div class="absolute inset-0 border-2 border-primary/50 rounded-lg animate-glow-pulse">
@@ -1237,7 +1236,6 @@
             }
         });
         var select = document.getElementById("chooseCamSel");
-        select.style.display = "block";
         var count = 0;
         //reverse array because some Android phones can't distinguish front and back cams at first load
         //and when this happens, most of the time, front cam goes first and back cam goes last
@@ -1325,12 +1323,7 @@
     }
 
     function showAnimation() {
-        const anim = document.getElementById("success-animation");
-        anim.style.display = "block"; // نمایش
-
-        setTimeout(() => {
-            anim.style.display = "none"; // بعد از 3 ثانیه مخفی
-        }, 3000);
+        console.log(111)
     }
 
     function FromUnityToJS(i_msg) {
@@ -1342,6 +1335,7 @@
             const messageData = JSON.parse(i_msg);
 
             if (messageData.type === 'startGame') {
+                document.getElementById("startARButton").style.display = "none";
                 console.log('startGame')
                 document.getElementById("ui-section").style.display = "block"
                 document.getElementById("info-value").innerHTML = "{{ request.user.profile.total_score }}"
@@ -1480,7 +1474,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         const avatarImg = document.getElementById("avatar-img");
         const selector = document.getElementById("avatar-selector");
-        const profileAvatar = document.getElementById("profile-avatar");
+        const profileAvatar = document.getElementById("camera-btn");
         const closeBtn = document.getElementById("close-avatar-selector");
 
         // اگر قبلاً انتخاب شده بود، همونو نشون بده
@@ -1694,12 +1688,35 @@
     function saveUsername() {
         const input = document.getElementById("username-input");
         const display = document.getElementById("username-display");
-
         if (input && display) {
             const newUsername = input.value.trim();
             if (newUsername !== "") {
-                display.textContent = "@" + newUsername;
-                showNotification("نام کاربری با موفقیت تغییر کرد ", "success");
+                display.textContent = newUsername;
+                console.log(newUsername)
+                fetch('/auth/update-nickname/', {  // آدرس ویو را تنظیم کنید
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // برای CSRF protection
+                    },
+                    body: JSON.stringify({
+                        'username': newUsername
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Success:', data.message);
+                            // انجام اقدامات بعدی
+                        } else {
+                            console.error('Error:', data.error);
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Network error:', error);
+                        alert('Network error occurred');
+                    });
             } else {
                 showNotification("لطفاً نام کاربری را وارد کنید ", "error");
             }

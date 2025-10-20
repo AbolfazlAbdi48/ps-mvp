@@ -48,24 +48,24 @@
                     </div>
 
 
-                    <div class="card p-4 flex items-center justify-between">
+                    <div class="card p-4 flex items-center justify-between cursor-not-allowed opacity-50">
                         <div>
                             <div class="font-semibold">بروزرسانی تورنمنت‌ها</div>
                             <div class="text-sm text-muted-foreground">دریافت اعلان دربارهٔ تورنمنت‌ها</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" checked disabled>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
 
-                    <div class="card p-4 flex items-center justify-between">
+                    <div class="card p-4 flex items-center justify-between opacity-50 cursor-not-allowed">
                         <div>
                             <div class="font-semibold">افکت‌های صوتی</div>
                             <div class="text-sm text-muted-foreground">فعال‌سازی صداهای درون بازی</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" checked disabled>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -135,7 +135,7 @@
                 <div class="space-y-3">
                     <h3 class="font-rajdhani font-bold text-lg text-destructive">منطقهٔ خطر</h3>
 
-                    <button onclick="navigateTo('language-page')"
+                    <button onclick="navigateToUrl('/auth/login/')"
                             class="card p-4 w-full flex items-center justify-between border-destructive/40 hover:border-destructive hover:bg-destructive/10">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">

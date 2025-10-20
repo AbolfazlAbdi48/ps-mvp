@@ -12,6 +12,12 @@ from .models import OTP, User, Profile
 from .serializers import PhoneSerializer, OTPVerifySerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+import json
+
 
 class SendOTPView(APIView):
     def post(self, request):
@@ -106,8 +112,39 @@ def profile_view(request):
             ).count() + 1
         except Profile.DoesNotExist:
             user_rank = None
-            
+
     context = {
         'user_rank': user_rank
     }
     return render(request, "account/profile.html", context)
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_nickname(request):
+    try:
+        data = json.loads(request.body)
+        username = data.get('username')
+
+        if not username:
+            return JsonResponse({
+                'success': False,
+                'error': 'Username is required'
+            }, status=400)
+
+        # آپدیت nickname کاربر
+        request.user.nickname = username
+        request.user.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Nickname updated successfully',
+            'new_nickname': username
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
