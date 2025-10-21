@@ -2199,14 +2199,15 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
-                            showAnimation();
-                            document.getElementById("info-value").innerHTML = data.user_score
-                            if (data.user_score >= 100) {
+                            //showAnimation();
+                            //document.getElementById("info-value").innerHTML = data.user_score
+                            document.getElementById("coin-counter").innerHTML = data.user_score
+                            //if (data.user_score >= 100) {
                                 // qrUnityFunc()
                                 //document.getElementById('container-qr').style.display = 'block';
-                                alert("تبریک، 100 حباب رو زدی، برای اعلام نتایج به گنجه اطلس مال برو!")
-                                window.location.reload()
-                            }
+                            //    alert("تبریک، 100 حباب رو زدی، برای اعلام نتایج به گنجه اطلس مال برو!")
+                            //    window.location.reload()
+                            //}
                             callUnityFunc();
 
                             //var progressBarCount = document.getElementById("progress-line")
