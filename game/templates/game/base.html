@@ -1465,7 +1465,7 @@
                 </div>
 
                 <!-- Center Area - AR Scanning Reticle -->
-                <div class="flex-1 flex items-center justify-center" style="opacity: 0">
+                <div class="flex-1 flex items-center justify-center" style="display: none">
                     <div class="relative w-64 h-64">
                         <!-- Scanning reticle -->
                         <div class="absolute inset-0 border-2 border-primary/50 rounded-lg animate-glow-pulse">
@@ -1491,7 +1491,7 @@
                 </div>
 
                 <!-- Bottom Floating Buttons -->
-                <div class="p-6 flex items-end justify-between">
+                <div class="p-6 flex items-end justify-between" style="position: absolute;bottom: 0">
                     <!-- Scan Button - Bottom Right -->
                     <button onclick="StartAR()" id="startARButton"
                             class="btn btn-neon shadow-glow-md hover:shadow-glow-lg transition-all animate-glow-pulse">
