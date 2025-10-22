@@ -1394,12 +1394,24 @@
         <div class="relative min-h-screen overflow-hidden">
 
             <!-- Simulated AR Camera Background -->
-            <div class="absolute inset-0 bg-gradient-hero" style="opacity: 0.5;">
+            <div class="absolute inset-0 bg-gradient-hero" style="display:none;opacity: 0.5;">
                 <!-- Animated blur effect to simulate camera -->
                 <div class="absolute inset-0 animate-glow-pulse"
                      style="opacity: 0.5;background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 50%);"></div>
 
+                <!-- Grid overlay for AR effect -->
+                <div class="absolute inset-0 opacity-10"
+                     style="background-image: linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px); background-size: 50px 50px;">
+                </div>
+            </div>
 
+            <!-- Floating Particles -->
+            <div id="ar-particles"></div>
+
+            <!-- AR Camera Elements -->
+
+            <!-- Semi-transparent UI Overlay -->
+            <div class="relative z-10 min-h-screen flex flex-col">
                 <div class="loader" id="loader" style="display:none;position: absolute; top:38%; left:50%; transform: translateX(-50%)">
                     <div class="box box0">
                         <div></div>
@@ -1429,19 +1441,6 @@
                         <div></div>
                     </div>
                 </div>
-                <!-- Grid overlay for AR effect -->
-                <div class="absolute inset-0 opacity-10"
-                     style="background-image: linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px); background-size: 50px 50px;">
-                </div>
-            </div>
-
-            <!-- Floating Particles -->
-            <div id="ar-particles"></div>
-
-            <!-- AR Camera Elements -->
-
-            <!-- Semi-transparent UI Overlay -->
-            <div class="relative z-10 min-h-screen flex flex-col">
                 <!-- Top Bar - Coins/Gems Counter -->
                 <div class="p-6 flex justify-between items-center">
                     <div class="flex items-center gap-3 px-6 py-3 rounded-full backdrop-blur-glass border border-primary/30 shadow-glow-sm"
