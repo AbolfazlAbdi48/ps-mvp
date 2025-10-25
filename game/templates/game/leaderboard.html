@@ -87,7 +87,15 @@
                 {% for profile in profiles %}
                     <div class="card p-4 flex items-center justify-between hover:border-primary/40">
                         <div class="flex items-center gap-4">
-                            <div class="text-xl font-rajdhani font-bold text-muted-foreground w-8">{{ forloop.counter }}</div>
+                            <div class="text-xl font-rajdhani font-bold text-muted-foreground w-8">
+                                {% if forloop.counter == 1 %}
+                                	4
+                                    {% elif forloop.counter == 2 %}
+                                    5
+                                    {% elif forloop.counter == 3 %}
+                                    6
+                                {% endif %}
+                            </div>
                             <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold text-sm">
                                 {{ profile.user.nickname|truncatechars:2 }}
                             </div>
@@ -109,6 +117,7 @@
 
 
                 <!-- Your Rank -->
+            <p>رتبه شما</p>
                 <div class="card p-4 flex items-center justify-between border-primary/40 bg-primary/5">
                     <div class="flex items-center gap-4">
                         <div class="text-xl font-rajdhani font-bold text-primary w-8">{{ user_rank }}</div>
