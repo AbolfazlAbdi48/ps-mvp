@@ -32,10 +32,10 @@
                     <!-- OTP Input -->
                     <div class="space-y-6">
                         <div class="flex gap-3 justify-center" dir="ltr">
-                            <input type="text" maxlength="1" class="otp-input" oninput="moveToNext(this, 1)" id="otp-0">
-                            <input type="text" maxlength="1" class="otp-input" oninput="moveToNext(this, 2)" id="otp-1">
-                            <input type="text" maxlength="1" class="otp-input" oninput="moveToNext(this, 3)" id="otp-2">
-                            <input type="text" maxlength="1" class="otp-input" oninput="moveToNext(this, 4)" id="otp-3">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 1)" id="otp-0">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 2)" id="otp-1">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 3)" id="otp-2">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 4)" id="otp-3">
                         </div>
                         <input type="hidden" id="id_code" name="code">
                         <button onclick="verifyOTP(event)" class="btn btn-neon w-full text-lg py-4">

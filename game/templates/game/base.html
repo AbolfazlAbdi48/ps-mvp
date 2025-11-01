@@ -1,6 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+
+{% if request.resolver_match.url_name == 'iranar-play' %}
+    <html lang="fa" dir="rtl" style="height: 100%;margin: 0;overflow: hidden">
+{% else %}
+    <html lang="fa" dir="rtl">
+{% endif %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1199,7 +1205,7 @@
 
 {% block main %}
     <!-- Game Page (Original Home Design) -->
-    <div id="game-page" class="page active">
+    <div id="game-page" class="page {% if request.resolver_match.url_name == 'game-play' %}active{% endif %}">
         <div class="p-6 space-y-8">
             <!-- Hero Section -->
             <div class="relative h-[60vh] min-h-[400px] rounded-3xl overflow-hidden bg-gradient-hero animate-fade-in">
@@ -1225,7 +1231,7 @@
                         </p>
 
                         <div class="flex flex-wrap gap-4">
-                            <button onclick="navigateTo('ar-game-page')" class="btn btn-neon">
+                            <button onclick="navigateToUrl('/api/game/v2/play/iranar/')" class="btn btn-neon">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
@@ -1248,7 +1254,7 @@
                 </div>
 
                 <div class="scroll-container pb-4">
-                    <div class="flex gap-4" style="width: max-content;" onclick="navigateTo('ar-game-page')">
+                    <div class="flex gap-4" style="width: max-content;" onclick="navigateToUrl('/api/game/v2/play/iranar/')">
                         <!-- Live Game Cards -->
                         <div class="w-72 card animate-slide-in" style="flex-shrink: 0;">
                             <div class="relative h-40 rounded-t-2xl overflow-hidden"
@@ -1355,9 +1361,8 @@
         </div>
     </div>
 
-
     <!-- AR Game Scene Page -->
-    <div id="ar-game-page" class="page">
+    <div id="ar-game-page" class="page {% if request.resolver_match.url_name == 'iranar-play' %}active{% endif %}" style="margin:0;height: 100%;overflow: hidden">
         <div class="ar-box" style="z-index: 10000;">
 
             <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
@@ -1366,7 +1371,8 @@
             <!-- AR Access Controls -->
             <div id="startARDiv" class="ctaDiv" style="">
                 <select id="chooseCamSel" style="display: none !important; opacity: 0" onchange="SelectCam()"></select>
-                <p id="unityText" style="text-align: center; width:60vw">روی شروع بازی کلیک کن و دسترسی دوربین رو فعال کن</p>
+                <p id="unityText" style="text-align: center; width:60vw">روی شروع بازی کلیک کن و دسترسی دوربین رو فعال
+                    کن</p>
             </div>
 
             <!-- Screenshot Preview -->
@@ -1391,451 +1397,135 @@
             </div>
 
         </div>
-{#        <div class="relative min-h-screen overflow-hidden">#}
+        {#        <div class="relative min-h-screen overflow-hidden">#}
 
-            <!-- Simulated AR Camera Background -->
-            <div class="absolute inset-0 bg-gradient-hero" style="display:none;opacity: 0.5;">
-                <!-- Animated blur effect to simulate camera -->
-                <div class="absolute inset-0 animate-glow-pulse"
-                     style="opacity: 0.5;background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 50%);"></div>
+        <!-- Simulated AR Camera Background -->
+        <div class="absolute inset-0 bg-gradient-hero" style="display:none;opacity: 0.5;">
+            <!-- Animated blur effect to simulate camera -->
+            <div class="absolute inset-0 animate-glow-pulse"
+                 style="opacity: 0.5;background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 50%);"></div>
 
-                <!-- Grid overlay for AR effect -->
-                <div class="absolute inset-0 opacity-10"
-                     style="background-image: linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px); background-size: 50px 50px;">
-                </div>
-            </div>
-
-            <!-- Floating Particles -->
-            <div id="ar-particles"></div>
-
-            <!-- AR Camera Elements -->
-
-            <!-- Semi-transparent UI Overlay -->
-            <div class="flex flex-col">
-                <div class="loader" id="loader" style="display:none;position: absolute; top:38%; left:50%; transform: translateX(-50%)">
-                    <div class="box box0">
-                        <div></div>
-                    </div>
-                    <div class="box box1">
-                        <div></div>
-                    </div>
-                    <div class="box box2">
-                        <div></div>
-                    </div>
-                    <div class="box box3">
-                        <div></div>
-                    </div>
-                    <div class="box box4">
-                        <div></div>
-                    </div>
-                    <div class="box box5">
-                        <div></div>
-                    </div>
-                    <div class="box box6">
-                        <div></div>
-                    </div>
-                    <div class="box box7">
-                        <div></div>
-                    </div>
-                    <div class="ground">
-                        <div></div>
-                    </div>
-                </div>
-                <!-- Top Bar - Coins/Gems Counter -->
-                <div class="p-6 flex justify-between items-center">
-                    <div class="flex items-center gap-3 px-6 py-3 rounded-full backdrop-blur-glass border border-primary/30 shadow-glow-sm"
-                         style="background: hsl(var(--card) / 0.6);">
-                        <svg class="w-6 h-6 text-accent animate-glow-pulse" fill="none" stroke="currentColor"
-                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span id="coin-counter"
-                              class="font-rajdhani font-bold text-2xl text-foreground">{{ request.user.profile.total_score }}</span>
-                    </div>
-
-                    <!-- AR Scan indicator -->
-                    <div class="px-4 py-2 rounded-full backdrop-blur-glass border border-accent/30"
-                         style="background: hsl(var(--card) / 0.4);">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-accent animate-glow-pulse"></div>
-                            <span class="text-sm font-medium text-accent">AR ACTIVE</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Center Area - AR Scanning Reticle -->
-                <div class="flex-1 flex items-center justify-center" style="display: none">
-                    <div class="relative w-64 h-64">
-                        <!-- Scanning reticle -->
-                        <div class="absolute inset-0 border-2 border-primary/50 rounded-lg animate-glow-pulse">
-                            <!-- Corner brackets -->
-                            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
-                            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
-                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
-                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
-
-                            <!-- Center crosshair -->
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <div class="w-4 h-4 border-2 border-accent rounded-full shadow-glow-md"></div>
-                            </div>
-                        </div>
-
-                        <!-- Scanning line animation -->
-                        <div class="absolute inset-0 overflow-hidden rounded-lg">
-                            <div class="absolute w-full h-0.5 shadow-glow-sm"
-                                 style="background: linear-gradient(to right, transparent, hsl(var(--primary)), transparent); animation: scan 2s ease-in-out infinite;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bottom Floating Buttons -->
-                <div class="p-6 flex items-end justify-between" style="position: absolute;bottom: 0">
-                    <!-- Scan Button - Bottom Right -->
-                    <button onclick="StartAR()" id="startARButton"
-                            class="btn btn-neon shadow-glow-md hover:shadow-glow-lg transition-all animate-glow-pulse">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        شروع بازی
-                    </button>
-
-                    <!-- Exit Button - Bottom Left -->
-                    <button onclick="navigateTo('game-page')"
-                            class="btn btn-glass shadow-glow-sm hover:shadow-glow-md transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        خروج از بازی
-                    </button>
-                </div>
-            </div>
-{#        </div>#}
-    </div>
-
-    <!-- Leaderboard Page -->
-    <div id="leaderboard-page" class="page">
-        <div class="p-6 space-y-6">
-            <!-- Header -->
-            <div class="text-center space-y-2 animate-fade-in">
-                <h1 class="text-4xl font-rajdhani font-bold bg-gradient-primary bg-clip-text">جدول رده‌بندی</h1>
-                <p class="text-muted-foreground">برترین بازیکنان امروز</p>
-            </div>
-
-            <!-- Filter Tabs -->
-            <div class="flex gap-2 p-1 rounded-xl bg-card/40 backdrop-blur-glass border border-primary/20">
-                <button class="flex-1 py-2 px-4 rounded-lg font-rajdhani font-semibold bg-gradient-primary text-primary-foreground"
-                        onclick="setLeaderboard('daily', this)">
-                    روزانه
-                </button>
-                <button class="flex-1 py-2 px-4 rounded-lg font-rajdhani font-semibold text-muted-foreground hover:text-foreground"
-                        onclick="setLeaderboard('weekly', this)">
-                    هفتگی
-                </button>
-                <button class="flex-1 py-2 px-4 rounded-lg font-rajdhani font-semibold text-muted-foreground hover:text-foreground"
-                        onclick="setLeaderboard('alltime', this)">
-                    همهٔ زمان‌ها
-                </button>
-            </div>
-            <!-- Top 3 -->
-            <div class="grid grid-cols-3 gap-3">
-                <!-- 2nd Place -->
-                <div class="card p-4 flex flex-col items-center space-y-2">
-                    <div class="text-2xl">🥈</div>
-                    <div class="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold">
-                        SK
-                    </div>
-                    <div class="text-center">
-                        <div class="font-semibold text-sm">سای‌کینگ</div>
-                        <div class="text-xs text-secondary">۸٬۵۳۲</div>
-                    </div>
-                </div>
-
-                <!-- 1st Place -->
-                <div class="card p-4 flex flex-col items-center space-y-2 border-primary/40">
-                    <div class="text-2xl">👑</div>
-                    <div class="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold shadow-glow-md">
-                        NJ
-                    </div>
-                    <div class="text-center">
-                        <div class="font-semibold">نینجا ایکس</div>
-                        <div class="text-sm text-primary font-bold">۱۲٬۴۵۶</div>
-                    </div>
-                </div>
-
-                <!-- 3rd Place -->
-                <div class="card p-4 flex flex-col items-center space-y-2">
-                    <div class="text-2xl">🥉</div>
-                    <div class="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold">
-                        CQ
-                    </div>
-                    <div class="text-center">
-                        <div class="font-semibold text-sm">سایبرکیو</div>
-                        <div class="text-xs text-accent">۷٬۸۹۱</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rest of Rankings -->
-            <div class="space-y-2">
-                <div class="card p-4 flex items-center justify-between hover:border-primary/40">
-                    <div class="flex items-center gap-4">
-                        <div class="text-xl font-rajdhani font-bold text-muted-foreground w-8">4</div>
-                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold text-sm">
-                            PX
-                        </div>
-                        <div>
-                            <div class="font-semibold">فونیکس‌آر</div>
-                            <div class="text-sm text-muted-foreground">۶٬۲۳۴ امتیاز</div>
-                        </div>
-                    </div>
-                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
-                </div>
-
-                <div class="card p-4 flex items-center justify-between hover:border-primary/40">
-                    <div class="flex items-center gap-4">
-                        <div class="text-xl font-rajdhani font-bold text-muted-foreground w-8">5</div>
-                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold text-sm">
-                            ST
-                        </div>
-                        <div>
-                            <div class="font-semibold">استورم‌تی</div>
-                            <div class="text-sm text-muted-foreground">۵٬۸۹۱ امتیاز</div>
-                        </div>
-                    </div>
-                    <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
-                    </svg>
-                </div>
-
-                <div class="card p-4 flex items-center justify-between hover:border-primary/40">
-                    <div class="flex items-center gap-4">
-                        <div class="text-xl font-rajdhani font-bold text-muted-foreground w-8">6</div>
-                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold text-sm">
-                            VN
-                        </div>
-                        <div>
-                            <div class="font-semibold">ورتکس‌ان</div>
-                            <div class="text-sm text-muted-foreground">۵٬۵۶۷ امتیاز</div>
-                        </div>
-                    </div>
-                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
-                </div>
-
-                <!-- Your Rank -->
-                <div class="card p-4 flex items-center justify-between border-primary/40 bg-primary/5">
-                    <div class="flex items-center gap-4">
-                        <div class="text-xl font-rajdhani font-bold text-primary w-8">۴۲</div>
-                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center font-rajdhani font-bold text-sm">
-                            JD
-                        </div>
-                        <div>
-                            <div class="font-semibold">تو (JohnDoe)</div>
-                            <div class="text-sm text-primary font-semibold">۱٬۲۳۴ امتیاز</div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Grid overlay for AR effect -->
+            <div class="absolute inset-0 opacity-10"
+                 style="background-image: linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px); background-size: 50px 50px;">
             </div>
         </div>
-    </div>
 
-    <!-- Settings Page -->
-    <div id="settings-page" class="page">
-        <div class="p-6 space-y-6">
-            <!-- Header -->
-            <div class="space-y-2 animate-fade-in">
-                <h1 class="text-3xl font-rajdhani font-bold">تنظیمات</h1>
-                <p class="text-muted-foreground">مدیریت تنظیمات شما</p>
+        <!-- Floating Particles -->
+        <div id="ar-particles"></div>
+
+        <!-- AR Camera Elements -->
+
+        <!-- Semi-transparent UI Overlay -->
+        <div class="flex flex-col">
+            <div class="loader" id="loader"
+                 style="display:none;position: absolute; top:38%; left:50%; transform: translateX(-50%)">
+                <div class="box box0">
+                    <div></div>
+                </div>
+                <div class="box box1">
+                    <div></div>
+                </div>
+                <div class="box box2">
+                    <div></div>
+                </div>
+                <div class="box box3">
+                    <div></div>
+                </div>
+                <div class="box box4">
+                    <div></div>
+                </div>
+                <div class="box box5">
+                    <div></div>
+                </div>
+                <div class="box box6">
+                    <div></div>
+                </div>
+                <div class="box box7">
+                    <div></div>
+                </div>
+                <div class="ground">
+                    <div></div>
+                </div>
+            </div>
+            <!-- Top Bar - Coins/Gems Counter -->
+            <div class="p-6 flex justify-between items-center">
+                <div class="flex items-center gap-3 px-6 py-3 rounded-full backdrop-blur-glass border border-primary/30 shadow-glow-sm"
+                     style="background: hsl(var(--card) / 0.6);">
+                    <svg class="w-6 h-6 text-accent animate-glow-pulse" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="coin-counter"
+                          class="font-rajdhani font-bold text-2xl text-foreground">{{ request.user.profile.total_score }}</span>
+                </div>
+
+                <!-- AR Scan indicator -->
+                <div class="px-4 py-2 rounded-full backdrop-blur-glass border border-accent/30"
+                     style="background: hsl(var(--card) / 0.4);">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-glow-pulse"></div>
+                        <span class="text-sm font-medium text-accent">AR ACTIVE</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Settings Sections -->
-            <div class="space-y-4">
-                <!-- Language -->
-                <div class="space-y-3">
-                    <h3 class="font-rajdhani font-bold text-lg">زبان</h3>
-                    <div class="card p-4">
-                        <select class="bg-transparent border-none focus:ring-0">
-                            <option>فارسی</option>
-                            <option>English(coming soon)</option>
-                        </select>
-                    </div>
-                </div>
+            <!-- Center Area - AR Scanning Reticle -->
+            <div class="flex-1 flex items-center justify-center" style="display: none">
+                <div class="relative w-64 h-64">
+                    <!-- Scanning reticle -->
+                    <div class="absolute inset-0 border-2 border-primary/50 rounded-lg animate-glow-pulse">
+                        <!-- Corner brackets -->
+                        <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+                        <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+                        <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+                        <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
 
-                <!-- Notifications -->
-                <div class="space-y-3">
-                    <div class="space-y-3">
-                        <h3 class="font-rajdhani font-bold text-lg">اعلان‌ها</h3>
-
-                        <div class="card p-4 flex items-center justify-between opacity-50 cursor-not-allowed">
-                            <div class="flex items-center gap-2">
-                                <div>
-                                    <div class="font-semibold">دعوت به بازی <span class="text-sm text-muted-foreground">به زودی</span>
-                                    </div>
-                                    <div class="text-sm text-muted-foreground">دریافت اعلان برای دعوت به بازی</div>
-                                </div>
-                            </div>
-                            <!-- غیرفعال کردن toggle -->
-                            <label class="toggle">
-                                <input type="checkbox" disabled>
-                                <span class="toggle-slider"></span>
-                            </label>
+                        <!-- Center crosshair -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="w-4 h-4 border-2 border-accent rounded-full shadow-glow-md"></div>
                         </div>
                     </div>
 
-
-                    <div class="card p-4 flex items-center justify-between">
-                        <div>
-                            <div class="font-semibold">بروزرسانی تورنمنت‌ها</div>
-                            <div class="text-sm text-muted-foreground">دریافت اعلان دربارهٔ تورنمنت‌ها</div>
-                        </div>
-                        <label class="toggle">
-                            <input type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="card p-4 flex items-center justify-between">
-                        <div>
-                            <div class="font-semibold">افکت‌های صوتی</div>
-                            <div class="text-sm text-muted-foreground">فعال‌سازی صداهای درون بازی</div>
-                        </div>
-                        <label class="toggle">
-                            <input type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Account -->
-                <div class="space-y-3">
-                    <h3 class="font-rajdhani font-bold text-lg">حساب کاربری</h3>
-
-
-                    <!-- Button -->
-                    <button onclick="showModal()"
-                            class="card p-4 w-full flex items-center justify-between hover:border-primary/40">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span>سیاست حفظ حریم خصوصی</span>
-                        </div>
-                        <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor"
-                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-
-
-                    <!-- Modal -->
-                    <!-- Modal -->
-                    <div id="myModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-                        <div class="bg-black rounded-xl p-6 w-11/12 max-w-md shadow-lg">
-                            <h2 class="text-xl font-bold mb-4 text-white">قوانین</h2>
-                            <p class="mb-4 text-gray-600">اینجا متن قوانین یا توضیحات مربوطه نوشته می‌شود.</p>
-                            <button onclick="hideModal()" class="btn btn-neon w-full">بستن</button>
-                        </div>
-                    </div>
-
-
-                    <button onclick="showModalInfo()"
-                            class="card p-4 w-full flex items-center justify-between hover:border-primary/40">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span>شرایط استفاده</span>
-                        </div>
-                        <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor"
-                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-
-
-                    <!-- Modal -->
-                    <div id="myModalInfo"
-                         class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-                        <div class="bg-black rounded-xl p-6 w-11/12 max-w-md shadow-lg">
-                            <h2 class="text-xl font-bold mb-4 text-white">توضیحات بازی</h2>
-                            <p class="mb-4 text-gray-600">اینجا توضیحات مربوطه نوشته می‌شود.</p>
-                            <button onclick="hideModalInfo()" class="btn btn-neon w-full">بستن</button>
+                    <!-- Scanning line animation -->
+                    <div class="absolute inset-0 overflow-hidden rounded-lg">
+                        <div class="absolute w-full h-0.5 shadow-glow-sm"
+                             style="background: linear-gradient(to right, transparent, hsl(var(--primary)), transparent); animation: scan 2s ease-in-out infinite;">
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Danger Zone -->
-                <div class="space-y-3">
-                    <h3 class="font-rajdhani font-bold text-lg text-destructive">منطقهٔ خطر</h3>
+            <!-- Bottom Floating Buttons -->
+            <div class="p-6 flex items-end justify-between" style="position: absolute;bottom: 5%">
+                <!-- Scan Button - Bottom Right -->
+                <button onclick="StartAR()" id="startARButton"
+                        class="btn btn-neon shadow-glow-md hover:shadow-glow-lg transition-all animate-glow-pulse">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    شروع بازی
+                </button>
 
-                    <button onclick="navigateTo('language-page')"
-                            class="card p-4 w-full flex items-center justify-between border-destructive/40 hover:border-destructive hover:bg-destructive/10">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                            </svg>
-                            <span class="text-destructive font-semibold">خروج از حساب</span>
-                        </div>
-                        <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-                </div>
+                <!-- Exit Button - Bottom Left -->
+                <button onclick="navigateToUrl('/api/game/v2/play/')"
+                        class="btn btn-glass shadow-glow-sm hover:shadow-glow-md transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    خروج از بازی
+                </button>
             </div>
         </div>
-    </div>
-
-    <!-- Selected Game Page -->
-    <div id="selected-game-page" class="page">
-        <div class="min-h-screen flex flex-col items-center justify-center p-6">
-            <div class="w-full max-w-md space-y-8 text-center animate-fade-in">
-                <!-- Empty State -->
-                <div class="space-y-6">
-                    <div class="inline-flex items-center justify-center w-32 h-32 rounded-3xl bg-gradient-primary/10 border border-primary/20">
-                        <svg class="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                    </div>
-
-                    <div class="space-y-2">
-                        <h2 class="text-3xl font-rajdhani font-bold">بازی انتخاب نشده</h2>
-                        <p class="text-muted-foreground">
-                            هنوز هیچ بازی‌ای را انجام نداده‌اید. ماجراجویی AR خود را آغاز کنید!
-                        </p>
-                        <p class="text-sm text-muted-foreground" dir="rtl">
-                            هنوز هیچ بازی انجام نداده‌اید
-                        </p>
-                    </div>
-
-                    <button onclick="navigateTo('game-page')" class="btn btn-neon w-full text-lg py-4">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
-                        </svg>
-                        کاوش بازی‌ها
-                    </button>
-                </div>
-            </div>
-        </div>
+        {#        </div>#}
     </div>
 
     <!-- Bottom Navigation -->
     <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 border-t z-50 backdrop-blur-glass"
-         style="background: hsl(var(--card) / 0.8); border-color: hsl(var(--primary) / 0.2)">
+         style="background: hsl(var(--card) / 0.8); border-color: hsl(var(--primary) / 0.2);{% if request.resolver_match.url_name == 'iranar-play' %}display:none;{% endif %}">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-around py-3">
                 <button style="color: hsl(var(--primary));" onclick="navigateToUrl('/')" data-page="game-page"
@@ -1883,8 +1573,6 @@
             </div>
         </div>
     </nav>
-
-
 
     <!-- Notification Container -->
     <div id="notification"
@@ -2201,12 +1889,13 @@
                             //showAnimation();
                             //document.getElementById("info-value").innerHTML = data.user_score
                             document.getElementById("coin-counter").innerHTML = data.user_score
-                            //if (data.user_score >= 100) {
-                                // qrUnityFunc()
-                                //document.getElementById('container-qr').style.display = 'block';
-                            //    alert("تبریک، 100 حباب رو زدی، برای اعلام نتایج به گنجه اطلس مال برو!")
-                            //    window.location.reload()
-                            //}
+                            if (data.user_score >= 3) {
+                            // qrUnityFunc()
+                            //document.getElementById('container-qr').style.display = 'block';
+                                alert("تبریک، سکه هارو پیدا کردی. حالا به نزدیک ترین افق کوروش برو.")
+                                //window.location.reload()
+                                window.location.href = "https://ar.doozbin.com/teh-ar/unity-build2/";
+                            }
                             callUnityFunc();
 
                             //var progressBarCount = document.getElementById("progress-line")

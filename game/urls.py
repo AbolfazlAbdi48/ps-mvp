@@ -9,6 +9,7 @@ urlpatterns = [
 
     # version 2
     path("v2/play/", GameplayView.as_view(), name="game-play"),
+    path("v2/play/iranar/", GameplayView.as_view(), name="iranar-play"),
     path("v2/play/cashable", SetCashableScoreView.as_view(), name="cashable-score"),
     path("v2/leaderboard/", LeaderBoardView.as_view(), name="game-leaderboard"),
     path("v2/settings/", settings_view, name="game-settings"),
