@@ -1,7 +1,8 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from .views import SendOTPView, VerifyOTPView, send_otp_view, verify_otp_view, profile_view, update_nickname
+from .views import SendOTPView, VerifyOTPView, send_otp_view, verify_otp_view, profile_view, update_nickname, \
+    privacy_view
 
 app_name = 'account'
 urlpatterns = [
@@ -13,4 +14,6 @@ urlpatterns = [
     path('verify/<str:phone>/', verify_otp_view, name='otp-login-verify'),
     path('profile/', profile_view, name='profile'),
     path('update-nickname/', update_nickname, name='update-nickname'),
+
+    path('privacy/', privacy_view, name='privacy'),
 ]

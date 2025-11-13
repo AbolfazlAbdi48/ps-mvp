@@ -24,7 +24,7 @@
                             را وارد کنید</p>
                         <p class="text-muted-foreground">{{ form.errors }}</p>
                         {% for message in messages %}
-                        	<p class="text-muted-foreground">{{ message }}</p>
+                            <p class="text-muted-foreground">{{ message }}</p>
                         {% endfor %}
 
                     </div>
@@ -32,19 +32,22 @@
                     <!-- OTP Input -->
                     <div class="space-y-6">
                         <div class="flex gap-3 justify-center" dir="ltr">
-                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 1)" id="otp-0">
-                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 2)" id="otp-1">
-                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 3)" id="otp-2">
-                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 4)" id="otp-3">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 1)"
+                                   id="otp-0">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 2)"
+                                   id="otp-1">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 3)"
+                                   id="otp-2">
+                            <input type="number" maxlength="1" class="otp-input" oninput="moveToNext(this, 4)"
+                                   id="otp-3">
                         </div>
                         <input type="hidden" id="id_code" name="code">
                         <button onclick="verifyOTP(event)" class="btn btn-neon w-full text-lg py-4">
                             تأیید و ادامه
                         </button>
-
                         <p class="text-sm text-center text-muted-foreground">
-                            کد را دریافت نکردید؟
-                            <button class="text-primary hover:underline">ارسال مجدد</button>
+                            ورود شما به معنای پذیرش <a href="{% url 'account:privacy' %}" class="text-primary">قوانین و
+                            مقررات</a> است
                         </p>
                     </div>
                 </div>

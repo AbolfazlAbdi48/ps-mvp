@@ -119,6 +119,10 @@ def profile_view(request):
     return render(request, "account/profile.html", context)
 
 
+def privacy_view(request):
+    return render(request, "account/privacy.html")
+
+
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
