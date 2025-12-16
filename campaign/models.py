@@ -52,3 +52,41 @@ class UserProgress(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.campaign.name}"
+
+
+class WeeklyEvent(models.Model):
+    name = models.CharField(max_length=100)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    is_active = models.BooleanField(default=True, db_index=True)
+
+    class Meta:
+        verbose_name = _('Weekly Event')
+        verbose_name_plural = _('3. Weekly Events')
+
+    def __str__(self):
+        return f"Event: {self.name} ({self.start_time.date()} - {self.end_time.date()})"
+
+
+class WeeklyUserScore(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='weekly_scores'
+    )
+    event = models.ForeignKey(
+        WeeklyEvent,
+        on_delete=models.CASCADE,
+        related_name='user_scores'
+    )
+
+    score = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('user', 'event')
+        indexes = [
+            models.Index(fields=['event', '-score']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} - Score: {self.score} in {self.event.name}"
