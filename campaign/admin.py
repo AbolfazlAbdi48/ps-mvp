@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from campaign.models import Campaign, CampaignLocation, UserProgress
+from campaign.models import Campaign, CampaignLocation, UserProgress, WeeklyEvent, WeeklyUserScore
 
 
 # Register your models here.
@@ -16,4 +16,14 @@ class CampaignLocationAdmin(admin.ModelAdmin):
 
 @admin.register(UserProgress)
 class UserProgressAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(WeeklyEvent)
+class WeeklyEventAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(WeeklyUserScore)
+class WeeklyUserScoreAdmin(admin.ModelAdmin):
     pass

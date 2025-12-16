@@ -62,7 +62,7 @@ class WeeklyEvent(models.Model):
 
     class Meta:
         verbose_name = _('Weekly Event')
-        verbose_name_plural = _('3. Weekly Events')
+        verbose_name_plural = _('4. Weekly Events')
 
     def __str__(self):
         return f"Event: {self.name} ({self.start_time.date()} - {self.end_time.date()})"
@@ -83,6 +83,8 @@ class WeeklyUserScore(models.Model):
     score = models.IntegerField(default=0)
 
     class Meta:
+        verbose_name = _('Weekly User Scores')
+        verbose_name_plural = _('4. Weekly User Scores')
         unique_together = ('user', 'event')
         indexes = [
             models.Index(fields=['event', '-score']),
