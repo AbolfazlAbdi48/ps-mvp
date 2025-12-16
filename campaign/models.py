@@ -84,7 +84,7 @@ class WeeklyUserScore(models.Model):
 
     class Meta:
         verbose_name = _('Weekly User Scores')
-        verbose_name_plural = _('4. Weekly User Scores')
+        verbose_name_plural = _('4.1 Weekly User Scores')
         unique_together = ('user', 'event')
         indexes = [
             models.Index(fields=['event', '-score']),
