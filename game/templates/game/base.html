@@ -1621,7 +1621,7 @@
 
 <script src="https://ar.doozbin.com/teh-ar/unity-build/arcamera.js" type="text/javascript"></script>
 <script src="https://ar.doozbin.com/teh-ar/unity-build/wtracker.js" type="text/javascript"></script>
-<script src="https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.loader.js"></script>
+<script src="https://ar.doozbin.com/teh-ar/unity-build/Build/iran-ar.loader.js"></script>
 <script>
     var initialize = async () => {
         var unityCanvas = document.querySelector("#unity-canvas");
@@ -1658,9 +1658,9 @@
         document.getElementById('unityText').innerHTML = "بازی درحال لود شدنه!"
         document.getElementById('loader').style.display = 'block'
         createUnityInstance(document.querySelector("#unity-canvas"), {
-                dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.data",
-                frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.framework.js",
-                codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/tehranar.wasm",
+                dataUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/iran-ar.data",
+                frameworkUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/iran-ar.framework.js",
+                codeUrl: "https://ar.doozbin.com/teh-ar/unity-build/Build/iran-ar.wasm",
                 //dataUrl: "{% static 'unity_build/UBuild/tehranar.data' %}",
                 //frameworkUrl: "{% static 'unity_build/UBuild/tehranar.framework.js' %}",
                 //codeUrl: "{% static 'unity_build/UBuild/tehranar.wasm' %}",
@@ -1674,7 +1674,7 @@
             },
             (progress) => {
                 //progressBarFull.style.width = 100 * progress + "%";
-                document.getElementById("unityText").innerHTML = `${100 * progress + "%"} <br> بازی درحال لود شدنه...`
+                document.getElementById("unityText").innerHTML = `${100 * progress.toFixed(2) + "%"} <br> بازی درحال لود شدنه...`
             }
         ).then((unityInstance) => {
             window.unityInstance = unityInstance;
@@ -1920,13 +1920,13 @@
                             //showAnimation();
                             //document.getElementById("info-value").innerHTML = data.user_score
                             document.getElementById("coin-counter").innerHTML = data.user_score
-                            if (data.user_score >= 3) {
+                            //if (data.user_score >= 3) {
                             // qrUnityFunc()
                             //document.getElementById('container-qr').style.display = 'block';
-                            alert("100 تا سکه رو زدی، برو دنبال ستاره!")
+                            //alert("100 تا سکه رو زدی، برو دنبال ستاره!")
                                 //window.location.reload()
                             //    window.location.href = "https://ar.doozbin.com/teh-ar/unity-build2/";
-                            }
+                            //}
                             callUnityFunc();
 
                             //var progressBarCount = document.getElementById("progress-line")
