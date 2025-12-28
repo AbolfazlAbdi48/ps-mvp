@@ -4,6 +4,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import F
+from campaign.models import WeeklyEvent, WeeklyUserScore
 from .models import Location
 from .serializers import LocationWithBundlesSerializer
 import geopy.distance
@@ -16,6 +18,8 @@ from django.views import View
 
 from account.models import Profile
 from .models import AssetBundle
+from django.utils import timezone
+from django.db import transaction
 
 
 def main(request):
@@ -82,26 +86,62 @@ class GameplayView(View):
         except AssetBundle.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Asset not found'}, status=404)
 
-        # Profile Update
-        user_profile = request.user.profile
-        user_profile.total_score += asset_bundle.points_per_tap
-        user_profile.save()
+        try:
+            current_event = WeeklyEvent.objects.get(is_active=True)
+            if current_event.end_time < timezone.now():
+                return JsonResponse({'status': 'error', 'message': 'Active event has ended. Processing rewards...'},
+                                    status=400)
+        except WeeklyEvent.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'No active weekly event is running'}, status=400)
 
-        # check cashable score
-        cashout_threshold = 10000
-        show_cashout_popup = False
+        try:
+            with transaction.atomic():
+                user = request.user
+                user_profile = user.profile
+                points_to_add = asset_bundle.points_per_tap
 
-        if user_profile.cashable_score >= cashout_threshold:
-            show_cashout_popup = True
+                # پیدا کردن یا ایجاد رکورد امتیاز هفتگی کاربر برای رویداد فعلی
+                weekly_score_record, created = WeeklyUserScore.objects.get_or_create(
+                    user=user,
+                    event=current_event,
+                    defaults={'score': points_to_add}
+                )
 
-        # load asset bundles
-        updated_asset_bundles = AssetBundle.objects.filter(
-            required_score_to_show__lte=user_profile.total_score).order_by('required_score_to_show')
-        updated_bundle_urls = [bundle.file_url for bundle in updated_asset_bundles]
+                if not created:
+                    # بهینه‌سازی: استفاده از F() Expression برای به‌روزرسانی اتمی
+                    weekly_score_record.score = F('score') + points_to_add
+                    weekly_score_record.save(update_fields=['score'])
+                    # برای دسترسی به مقدار به‌روز شده، باید دوباره از دیتابیس خوانده شود
+                    weekly_score_record.refresh_from_db()
+
+                # Profile Update
+                user_profile = request.user.profile
+                user_profile.total_score += asset_bundle.points_per_tap
+                user_profile.save()
+
+                # check cashable score
+                cashout_threshold = 10000
+                show_cashout_popup = False
+
+                if user_profile.cashable_score >= cashout_threshold:
+                    show_cashout_popup = True
+
+                user_profile.refresh_from_db()
+
+                updated_asset_bundles = AssetBundle.objects.filter(
+                    required_score_to_show__lte=user_profile.total_score
+                ).order_by('required_score_to_show')
+
+                updated_bundle_urls = [bundle.file_url for bundle in updated_asset_bundles]
+
+        except Exception as e:
+            # در صورت بروز هر گونه خطا در تراکنش
+            return JsonResponse({'status': 'error', 'message': f'Database update failed: {str(e)}'}, status=500)
 
         response_data = {
             'status': 'success',
             'user_score': user_profile.total_score,
+            'user_weekly_score': weekly_score_record.score,
             'cashable_score': user_profile.cashable_score,
             'show_cashout_popup': show_cashout_popup,
             'asset_bundles': updated_bundle_urls,
